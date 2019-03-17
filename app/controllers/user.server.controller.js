@@ -1,5 +1,11 @@
 const  User  =  require ( '../models/user.server.model' );
 exports . create  =  function ( req , res ){
+
+    if (req.body.username == null) {
+        res.status(400).send({error: 'Username is missing'});
+        return;
+    }
+
     let user_data = {
         "username": req.body.username,
         "email": req.body.email,
@@ -17,10 +23,6 @@ exports . create  =  function ( req , res ){
     let values = [
         user, email, givenName, familyName, password
     ];
-
-    if (req.body.username == null) {
-        res.status(400).send({error: 'Username is missing'});
-    }
 
     User.insert(values, function(result){
         res.json(result);
