@@ -88,22 +88,22 @@ exports . login = function (req , res) {
         "password": req.body.password
     };
 
-    let user = "";
-    let email = "";
-    let password = "";
+    let user = user_data['username'];
+    let email = user_data['email'];
+    let password = user_data['password'] ;
 
-    if (typeof user_data['username'] == "undefined" && typeof user_data['email'] == "undefined") {
+    if (typeof user == "undefined" && typeof email == "undefined") {
         res.status(400).send('Bad Request');
         return;
     }
-    if (typeof user_data['username'] != "undefined" ) {
-        user = user_data['username'].toString();
+    if (typeof user != "undefined" ) {
+        user.toString();
     }
-    if (typeof user_data['email'] != "undefined") {
-        email = user_data['email'].toString();
+    if (typeof email != "undefined") {
+        email.toString();
     }
-    if (typeof user_data['password'] != "undefined") {
-        password = user_data['password'].toString();
+    if (typeof password != "undefined") {
+        password.toString();
     } else {
         res.status(400).send('Bad Request'); //No password
         return;
