@@ -71,6 +71,15 @@ exports . create  =  function ( req , res ){
     });
 };
 
+var rand = function() {
+    return Math.random().toString(36).substr(2); // remove `0.`
+};
+
+var token = function() {
+    return rand() + rand(); // to make it longer
+};
+
+
 exports . login = function (req , res) {
     let user_data = {
         "username": req.body.username,
@@ -92,6 +101,6 @@ exports . login = function (req , res) {
             return;
         }
         res.status(200);
-        res.json({userId: result[0]['user_id'], token: 'abc'});
+        res.json({userId: result[0]['user_id'], token: token()});
     });
 };
