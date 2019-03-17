@@ -13,6 +13,12 @@ exports . create  =  function ( req , res ){
         return;
     }
 
+    //Check if password is empty
+    if (req.body.password == null || req.body.password === "") {
+        res.status(400).send({error: 'Bad Request'});
+        return;
+    }
+
     //Check if email is valid
     function validateEmail(email) {
         var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
