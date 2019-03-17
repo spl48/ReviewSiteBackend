@@ -113,12 +113,14 @@ exports . login = function (req , res) {
         user, email, password
     ];
 
-    User.verify(values, function (result){
+    let authToken = token();
+
+    User.verify(values, authToken, function (result){
         if (result.length === 0) {
             res.status(400).send('Bad Request');
             return;
         }
         res.status(200);
-        res.json({userId: result[0]['user_id'], token: token()});
+        res.json({userId: result[0]['user_id'], token: authToken});
     });
 };

@@ -8,10 +8,11 @@ exports . insert  =  function (values, done){
 
 };
 
-exports . verify = function(values, done){
+exports . verify = function(values, authToken, done){
     db.getPool().query('SELECT user_id FROM User WHERE (username=? OR email=?) AND BINARY password=?', values, function(err, result) {
         if (err) return done(err);
 
         done(result);
     });
+    db.getPool().query('UPDATE User SET auth_token=? WHERE username=?', [authToken, values[0]]);
 }
