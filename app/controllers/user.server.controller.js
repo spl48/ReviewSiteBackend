@@ -53,8 +53,8 @@ exports . create  =  function ( req , res ){
             res.status(400).send({error: 'Username already taken'});
             return;
         }
-        //res.status(201).send('Created');
-        res.json(result);
+        res.status(201).send('Created');
+        //res.json(result);
 
     });
 };
