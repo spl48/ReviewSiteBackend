@@ -49,6 +49,12 @@ exports . create  =  function ( req , res ){
     ];
 
     User.insert(values, function(result){
+        if (result['code'] === 'ER_DUP_ENTRY') {
+            res.status(400).send({error: 'Username already taken'});
+            return;
+        }
+        //res.status(201).send('Created');
         res.json(result);
+
     });
 };
