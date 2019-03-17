@@ -1,8 +1,13 @@
 const  User  =  require ( '../models/user.server.model' );
 exports . create  =  function ( req , res ){
 
-    if (req.body.username == null) {
-        res.status(400).send({error: 'Username is missing'});
+    if (req.body.username == null || req.body.username == "") {
+        res.status(400).send({error: 'Bad Request'});
+        return;
+    }
+
+    if (req.body.email == null || req.body.email == "") {
+        res.status(400).send({error: 'Bad Request'});
         return;
     }
 
