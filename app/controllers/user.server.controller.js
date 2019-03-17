@@ -1,4 +1,10 @@
 const  User  =  require ( '../models/user.server.model' );
+
+function validateEmail(email) {
+    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+}
+
 exports . create  =  function ( req , res ){
 
     //Check if username is empty
@@ -32,10 +38,6 @@ exports . create  =  function ( req , res ){
     }
 
     //Check if email is valid
-    function validateEmail(email) {
-        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        return re.test(String(email).toLowerCase());
-    }
 
     if (!validateEmail(req.body.email)) {
         res.status(400).send({error: 'Bad Request'});
@@ -67,7 +69,6 @@ exports . create  =  function ( req , res ){
         }
         res.status(201);
         res.json({userId: result['insertId']});
-
     });
 };
 
@@ -87,9 +88,26 @@ exports . login = function (req , res) {
         "password": req.body.password
     };
 
-    let user = user_data['username'].toString();
-    let email = user_data['email'].toString();
-    let password = user_data['password'].toString();
+    let user = "";
+    let email = "";
+    let password = "";
+
+    if (typeof user_data['username'] == "undefined" && typeof user_data['email'] == "undefined") {
+        res.status(400).send('Bad Request');
+        return;
+    }
+    if (typeof user_data['username'] != "undefined" ) {
+        user = user_data['username'].toString();
+    }
+    if (typeof user_data['email'] != "undefined") {
+        email = user_data['email'].toString();
+    }
+    if (typeof user_data['password'] != "undefined") {
+        password = user_data['password'].toString();
+    } else {
+        res.status(400).send('Bad Request'); //No password
+        return;
+    }
 
     let values = [
         user, email, password
