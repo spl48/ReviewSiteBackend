@@ -27,8 +27,6 @@ exports . authorize = function (authToken, done) {
 
 exports . removeToken = function (userID, done) {
     db.getPool().query('UPDATE User SET auth_token=NULL WHERE user_id=?', userID, function (err, result) {
-        if (err) return done(err);
-
-        done(result);
+        return done();
     });
 };

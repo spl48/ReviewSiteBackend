@@ -144,8 +144,7 @@ exports . logout = function (req , res) {
             return;
         }
         User.removeToken(result[0]['user_id'], function (result){
-
+            res.status(200).send('OK');
         });
-        res.status(200).send('OK');
     })
 };
