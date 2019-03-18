@@ -137,8 +137,9 @@ exports . logout = function (req , res) {
             res.status(401).send({error: 'Unauthorized'});
             return;
         }
-        User.removeToken(result[0]['user_id'], function (result){
-            res.status(200).send('OK');
-        });
+        // User.removeToken(result[0]['user_id'], function (result){
+        //     res.status(200).send('OK');
+        // });
+        res.status(200).send('OK');
     })
 };
