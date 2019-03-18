@@ -165,14 +165,14 @@ exports . getUserInfo = function (req , res) {
         userID, authToken
     ];
 
-    User.authorize(authToken, function (result) {
-        if (result.length !== 0) {
-            authorized = true;
-            requestedUser = result[0]['user_id'];
-        } else {
-            res.status(404).send({error: 'Not Found'});
-        }
-    });
+    // User.authorize(authToken, function (result) {
+    //     if (result.length !== 0) {
+    //         authorized = true;
+    //         requestedUser = result[0]['user_id'];
+    //     } else {
+    //         res.status(404).send({error: 'Not Found'});
+    //     }
+    // });
 
     // User.getUser(values, function (result) {
     //     if (authorized && userID.toString() === requestedUser.toString()) {
