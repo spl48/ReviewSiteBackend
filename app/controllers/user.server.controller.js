@@ -130,7 +130,13 @@ exports . logout = function (req , res) {
         "authorization": req.header('X-Authorization')
     };
 
+
     let authToken = data['authorization'];
+
+    if (authToken == null || authToken === "") {
+        res.status(401).send('Unauthorized');
+        return;
+    }
 
     User.authorize(authToken, function (result){
         if (result.length === 0) {
