@@ -15,4 +15,20 @@ exports . verify = function(values, authToken, done){
         done(result);
     });
     db.getPool().query('UPDATE User SET auth_token=? WHERE username=?', [authToken, values[0]]);
-}
+};
+
+exports . authorize = function (authToken, done) {
+    db.getPool().query('SELECT user_id FROM User WHERE auth_token=?', authToken, function(err, result) {
+        if (err) return done(err);
+
+        done(result);
+    });
+};
+
+exports . removeToken = function (userID, done) {
+    db.getPool().query('UPDATE User SET auth_token=NULL WHERE user_id=?', userID, function (err, result) {
+        if (err) return done(err);
+
+        done(result);
+    });
+};

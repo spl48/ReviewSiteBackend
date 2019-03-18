@@ -124,3 +124,21 @@ exports . login = function (req , res) {
         res.json({userId: result[0]['user_id'], token: authToken});
     });
 };
+
+exports . logout = function (req , res) {
+    let data = {
+        "authorization": req.header('X-Authorization')
+    };
+
+    let authToken = data['authorization'];
+
+    User.authorize(authToken, function (result){
+        if (result.length === 0) {
+            res.status(401).send({error: 'Unauthorized'});
+            return;
+        }
+        User.removeToken(result[0]['user_id'], function (result){
+            res.status(200).send('OK');
+        });
+    })
+};
