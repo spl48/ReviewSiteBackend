@@ -174,23 +174,22 @@ exports . getUserInfo = function (req , res) {
         }
     });
 
-    User.getUser(values, function (result) {
-        if (authorized && userID.toString() === requestedUser.toString()) {
-            res.status(200);
-            res.json({
-                username: result[0]['username'],
-                email: result[0]['email'],
-                givenName: result[0]['given_name'],
-                familyName: result[0]['family_name']
-            });
-        } else if (authorized && userID.toString() !== requestedUser.toString()) {
-            res.status(200);
-            res.json({
-                username: result[0]['username'],
-                givenName: result[0]['given_name'],
-                familyName: result[0]['family_name']
-            });
-        }
-
-    })
+    // User.getUser(values, function (result) {
+    //     if (authorized && userID.toString() === requestedUser.toString()) {
+    //         res.status(200);
+    //         res.json({
+    //             username: result[0]['username'],
+    //             email: result[0]['email'],
+    //             givenName: result[0]['given_name'],
+    //             familyName: result[0]['family_name']
+    //         });
+    //     } else if (authorized && userID.toString() !== requestedUser.toString()) {
+    //         res.status(200);
+    //         res.json({
+    //             username: result[0]['username'],
+    //             givenName: result[0]['given_name'],
+    //             familyName: result[0]['family_name']
+    //         });
+    //     }
+    // })
 };
