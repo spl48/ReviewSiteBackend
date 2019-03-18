@@ -166,6 +166,9 @@ exports . getUserInfo = function (req , res) {
     ];
 
     User.authorize(authToken, function (result) {
+        if (result === 500) {
+            res.status(500).send('Server Error')
+        }
         if (result.length !== 0) {
             authorized = true;
             requestedUser = result[0]['user_id'];
@@ -175,6 +178,9 @@ exports . getUserInfo = function (req , res) {
     });
 
     User.getUser(values, function (result) {
+        if (result === 500) {
+            res.status(500).send('Server Error')
+        }
         if (authorized && userID.toString() === requestedUser.toString()) {
             res.status(200);
             res.json({

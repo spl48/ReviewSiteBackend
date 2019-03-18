@@ -19,7 +19,7 @@ exports . verify = function(values, authToken, done){
 
 exports . authorize = function (authToken, done) {
     db.getPool().query('SELECT user_id FROM User WHERE auth_token=?', authToken, function(err, result) {
-        if (err) return done(err);
+        if (err) return done(500);
 
         return done(result);
     });
@@ -27,7 +27,7 @@ exports . authorize = function (authToken, done) {
 
 exports . getUser = function(values, done) {
     db.getPool().query('SELECT username, email, given_name, family_name FROM User WHERE user_id=?', values, function(err, result) {
-        if (err) return done(err);
+        if (err) return done(500);
 
         return done(result);
     });
