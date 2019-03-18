@@ -190,6 +190,8 @@ exports . getUserInfo = function (req , res) {
                 givenName: result[0]['given_name'],
                 familyName: result[0]['family_name']
             });
+        } else {
+            res.status(404).send({error: 'Not Found'});
         }
     })
 };
