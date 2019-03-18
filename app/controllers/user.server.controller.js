@@ -143,8 +143,49 @@ exports . logout = function (req , res) {
             res.status(401).send({error: 'Unauthorized'});
             return;
         }
-        User.removeToken(result[0]['user_id'], function (result){
+        User.removeToken(result[0]['user_id'], function (){
             res.status(200).send('OK');
         });
     })
+};
+
+exports . getUserInfo = function (req , res) {
+
+    let data = {
+        "user_id": req.params.id,
+        "authorization": req.header('X-Authorization')
+    };
+
+    let userID = data['user_id'];
+    let authToken = data['authorization'];
+
+    let values = [
+        userID, authToken
+    ];
+
+    User.authorize(authToken, function (result) {
+        if (result.length !== 0) {
+            let requestedUser = result[0]['user_id'];
+            User.getUser(values, function (result) {
+                res.status(200);
+                if (userID.toString() === requestedUser.toString()) {
+                    res.json({
+                        username: result[0]['username'],
+                        email: result[0]['email'],
+                        givenName: result[0]['given_name'],
+                        familyName: result[0]['family_name']
+                    });
+                } else {
+                    res.json({
+                        username: result[0]['username'],
+                        givenName: result[0]['given_name'],
+                        familyName: result[0]['family_name']
+                    });
+                }
+
+            })
+        } else {
+            res.status(404).send({error: 'Not Found'});
+        }
+    });
 };

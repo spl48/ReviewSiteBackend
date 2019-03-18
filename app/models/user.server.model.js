@@ -25,6 +25,14 @@ exports . authorize = function (authToken, done) {
     });
 };
 
+exports . getUser = function(values, done) {
+    db.getPool().query('SELECT username, email, given_name, family_name FROM User WHERE user_id=?', values, function(err, result) {
+        if (err) return done(err);
+
+        done(result);
+    });
+};
+
 exports . removeToken = function (userID, done) {
     db.getPool().query('UPDATE User SET auth_token=NULL WHERE user_id=?', userID, function (err, result) {
         return done();
