@@ -168,20 +168,21 @@ exports . getUserInfo = function (req , res) {
     User.authorize(authToken, function (result) {
         if (result === 500) {
             res.status(500).send('Server Error')
-        }
-        if (result.length !== 0) {
+        } else if (result.length !== 0) {
             authorized = true;
             requestedUser = result[0]['user_id'];
         } else {
             res.status(404).send({error: 'Not Found'});
+            return;
         }
     });
 
     User.getUser(values, function (result) {
         if (result === 500) {
             res.status(500).send('Server Error')
-        }
-        if (authorized && userID.toString() === requestedUser.toString()) {
+        } if (result.length === 0) {
+            res.status(404).send({error: 'Not Found'});
+        } else if (authorized && userID.toString() === requestedUser.toString()) {
             res.status(200);
             res.json({
                 username: result[0]['username'],
@@ -196,8 +197,6 @@ exports . getUserInfo = function (req , res) {
                 givenName: result[0]['given_name'],
                 familyName: result[0]['family_name']
             });
-        } else {
-            res.status(404).send({error: 'Not Found'});
         }
     })
 };
