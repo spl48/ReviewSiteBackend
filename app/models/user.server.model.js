@@ -17,20 +17,22 @@ exports . verify = function(values, authToken, done){
     db.getPool().query('UPDATE User SET auth_token=? WHERE username=?', [authToken, values[0]]);
 };
 
-exports . authorize = function (authToken, done) {
-    db.getPool().query('SELECT user_id FROM User WHERE auth_token=?', authToken, function(err, result) {
-        if (err) return done(500);
-
-        return done(result);
-    });
+exports . authorize = async function (authToken) {
+    try {
+        let result = db.getPool().query('SELECT user_id FROM User WHERE auth_token=?', authToken);
+        return result;
+    } catch (err) {
+        return 500;
+    }
 };
 
-exports . getUser = function(values, done) {
-    db.getPool().query('SELECT username, email, given_name, family_name FROM User WHERE user_id=?', values, function(err, result) {
-        if (err) return done(500);
-
-        return done(result);
-    });
+exports . getUser = async function(values) {
+    try {
+        let result = db.getPool().query('SELECT username, email, given_name, family_name FROM User WHERE user_id=?', values);
+        return result;
+    } catch (err) {
+        return 500;
+    }
 };
 
 exports . removeToken = function (userID, done) {

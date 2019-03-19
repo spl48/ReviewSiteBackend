@@ -149,7 +149,7 @@ exports . logout = function (req , res) {
     })
 };
 
-exports . getUserInfo = function (req , res) {
+exports . getUserInfo = async function (req , res) {
     let authorized = false;
     let requestedUser = null;
 
@@ -165,38 +165,38 @@ exports . getUserInfo = function (req , res) {
         userID, authToken
     ];
 
-    User.authorize(authToken, function (result) {
-        if (result === 500) {
-            res.status(500).send('Server Error')
-        } else if (result.length !== 0) {
-            authorized = true;
-            requestedUser = result[0]['user_id'];
-        } else {
-            res.status(404).send({error: 'Not Found'});
-            return;
-        }
-    });
+    let result1 = await User.authorize(authToken);
 
-    User.getUser(values, function (result) {
-        if (result === 500) {
-            res.status(500).send('Server Error')
-        } if (result.length === 0) {
-            res.status(404).send({error: 'Not Found'});
-        } else if (authorized && userID.toString() === requestedUser.toString()) {
-            res.status(200);
-            res.json({
-                username: result[0]['username'],
-                email: result[0]['email'],
-                givenName: result[0]['given_name'],
-                familyName: result[0]['family_name']
-            });
-        } else if (authorized && userID.toString() !== requestedUser.toString()) {
-            res.status(200);
-            res.json({
-                username: result[0]['username'],
-                givenName: result[0]['given_name'],
-                familyName: result[0]['family_name']
-            });
-        }
-    })
+    if (result1 === 500) {
+        res.status(500).send('Server Error')
+    } else if (result1.length !== 0) {
+        authorized = true;
+        requestedUser = result1[0]['user_id'];
+    } else {
+        res.status(404).send({error: 'Not Found'});
+        return;
+    }
+
+    let result2 = await User.getUser(values);
+
+    if (result2 === 500) {
+        res.status(500).send('Server Error')
+    } else if (result2.length === 0) {
+        res.status(404).send({error: 'Not Found'});
+    } else if (authorized && userID.toString() === requestedUser.toString()) {
+        res.status(200);
+        res.json({
+            username: result2[0]['username'],
+            email: result2[0]['email'],
+            givenName: result2[0]['given_name'],
+            familyName: result2[0]['family_name']
+        });
+    } else if (authorized && userID.toString() !== requestedUser.toString()) {
+        res.status(200);
+        res.json({
+            username: result2[0]['username'],
+            givenName: result2[0]['given_name'],
+            familyName: result2[0]['family_name']
+        });
+    }
 };
