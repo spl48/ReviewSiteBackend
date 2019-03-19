@@ -125,7 +125,7 @@ exports . login = function (req , res) {
     });
 };
 
-exports . logout = function (req , res) {
+exports . logout = async function (req , res) {
     let data = {
         "authorization": req.header('X-Authorization')
     };
@@ -138,15 +138,16 @@ exports . logout = function (req , res) {
         return;
     }
 
-    User.authorize(authToken, function (result){
-        if (result.length === 0) {
-            res.status(401).send({error: 'Unauthorized'});
-            return;
-        }
-        User.removeToken(result[0]['user_id'], function (){
-            res.status(200).send('OK');
-        });
-    })
+    let result = await User.authorize(authToken);
+
+    if (result.length === 0) {
+        res.status(401).send({error: 'Unauthorized'});
+        return;
+    }
+
+    await User.removeToken(result[0]['user_id']);
+    res.status(200).send('OK');
+
 };
 
 exports . getUserInfo = async function (req , res) {
