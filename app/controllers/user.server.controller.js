@@ -185,6 +185,8 @@ exports . getUserInfo = async function (req , res) {
     if (result1.length !== 0) {
         authorized = true;
         requestedUser = result1[0]['user_id'];
+    } else {
+        requestedUser = "-1";
     }
 
     let result2 = null;
