@@ -170,12 +170,10 @@ exports . getUserInfo = async function (req , res) {
 
     if (result1 === 500) {
         res.status(500).send('Server Error')
+        return;
     } else if (result1.length !== 0) {
         authorized = true;
         requestedUser = result1[0]['user_id'];
-    } else {
-        res.status(404).send({error: 'Not Found'});
-        return;
     }
 
     let result2 = await User.getUser(values);
@@ -192,7 +190,7 @@ exports . getUserInfo = async function (req , res) {
             givenName: result2[0]['given_name'],
             familyName: result2[0]['family_name']
         });
-    } else if (authorized && userID.toString() !== requestedUser.toString()) {
+    } else if ((authorized && userID.toString() !== requestedUser.toString()) || !authorized) {
         res.status(200);
         res.json({
             username: result2[0]['username'],
