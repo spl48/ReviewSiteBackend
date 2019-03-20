@@ -168,7 +168,7 @@ exports . getUserInfo = async function (req , res) {
 
     let result1 = null;
 
-    if (authToken !== null || authToken !== "") {
+    if (authToken !== null || authToken !== undefined || authToken !== "") {
         try {
             result1 = await User.authorize(authToken);
         } catch (err) {
