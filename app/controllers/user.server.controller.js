@@ -171,7 +171,8 @@ exports . getUserInfo = async function (req , res) {
     try {
         result1 = await User.authorize(authToken);
     } catch (err) {
-        res.status(501).send('Server Error');
+        console.log(err);
+        res.status(500).send('Server Error');
         return;
     }
 
@@ -184,7 +185,8 @@ exports . getUserInfo = async function (req , res) {
     try {
         result2 = await User.getUser(values);
     } catch (err) {
-        res.status(501).send('Server Error');
+        console.log(err);
+        res.status(500).send('Server Error');
         return;
     }
 
