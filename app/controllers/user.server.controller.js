@@ -169,7 +169,7 @@ exports . getUserInfo = async function (req , res) {
     let result1 = await User.authorize(authToken);
 
     if (result1 === 500) {
-        res.status(500).send('Server Error')
+        //res.status(500).send('Server Error')
         return;
     } else if (result1.length !== 0) {
         authorized = true;
