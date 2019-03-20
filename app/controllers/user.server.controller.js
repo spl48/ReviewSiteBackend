@@ -171,9 +171,13 @@ exports . getUserInfo = async function (req , res) {
     try {
         result1 = await User.authorize(authToken);
     } catch (err) {
-        console.log(err);
-        res.status(500).send('Server Error');
-        return;
+        if (err.type === 'ER_PARSE_ERROR') {
+            authorized = false;
+        } else {
+            console.log(err);
+            res.status(500).send('Server Error');
+            return;
+        }
     }
 
     if (result1.length !== 0) {
