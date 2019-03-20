@@ -166,21 +166,29 @@ exports . getUserInfo = async function (req , res) {
         userID, authToken
     ];
 
-    let result1 = await User.authorize(authToken);
+    let result1 = null;
 
-    if (result1 === 500) {
-        res.status(501).send('Server Error')
+    try {
+        result1 = await User.authorize(authToken);
+    } catch (err) {
+        res.status(501).send('Server Error');
         return;
-    } else if (result1.length !== 0) {
+    }
+
+    if (result1.length !== 0) {
         authorized = true;
         requestedUser = result1[0]['user_id'];
     }
 
-    let result2 = await User.getUser(values);
+    let result2 = null;
+    try {
+        result2 = await User.getUser(values);
+    } catch (err) {
+        res.status(501).send('Server Error');
+        return;
+    }
 
-    if (result2 === 500) {
-        res.status(501).send('Server Error')
-    } else if (result2.length === 0) {
+    if (result2.length === 0) {
         res.status(404).send({error: 'Not Found'});
     } else if (authorized && userID.toString() === requestedUser.toString()) {
         res.status(200);

@@ -22,16 +22,15 @@ exports . authorize = async function (authToken) {
         let result = await db.getPool().query('SELECT user_id FROM User WHERE auth_token=?', authToken);
         return result;
     } catch (err) {
-        return 500;
+        throw (err);
     }
 };
 
 exports . getUser = async function (values) {
     try {
         return await db.getPool().query('SELECT username, email, given_name, family_name FROM User WHERE user_id=?', values);
-        //return ('done');
     } catch (err) {
-        return 500;
+        throw (err);
     }
 };
 
