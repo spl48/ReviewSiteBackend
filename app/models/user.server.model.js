@@ -19,7 +19,7 @@ exports . verify = function(values, authToken, done){
 
 exports . authorize = async function (authToken) {
     try {
-        let result = await db.getPool().query('SELECT user_id FROM User WHERE auth_token=?', authToken);
+        let result = await db.getPool().query('SELECT user_id FROM User WHERE auth_token=?', authToken.toString());
         return result;
     } catch (err) {
         throw (err);
@@ -28,7 +28,8 @@ exports . authorize = async function (authToken) {
 
 exports . getUser = async function (values) {
     try {
-        return await db.getPool().query('SELECT username, email, given_name, family_name FROM User WHERE user_id=?', values);
+        let result =  await db.getPool().query('SELECT username, email, given_name, family_name FROM User WHERE user_id=?', values);
+        return result;
     } catch (err) {
         throw (err);
     }
