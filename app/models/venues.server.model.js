@@ -18,3 +18,30 @@ exports . insert  =  async function (values) {
     }
 
 };
+
+exports . getOne = async function (venueId) {
+    try {
+        let result = db.getPool().query('SELECT * FROM Venue WHERE venue_id=?', venueId);
+        return result;
+    } catch (err) {
+        throw (err);
+    }
+};
+
+exports . getCategory = async function (categoryId) {
+    try {
+        let result = db.getPool().query('SELECT * FROM VenueCategory WHERE category_id=?', categoryId);
+        return result;
+    } catch (err) {
+        throw (err);
+    }
+};
+
+exports . getUsername = async function (userId) {
+    try {
+        let result = db.getPool().query('SELECT username FROM User WHERE user_id=?', userId);
+        return result;
+    } catch (err) {
+        throw (err);
+    }
+}

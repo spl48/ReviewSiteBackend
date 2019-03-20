@@ -1,5 +1,3 @@
-//import * as User from "../models/user.server.model";
-
 const  Venues  =  require ( '../models/venues.server.model' );
 
 exports . create = async function (req, res) {
@@ -97,4 +95,63 @@ exports . create = async function (req, res) {
         return;
     }
 
-}
+};
+
+exports . read = async function (req , res) {
+    let venueId = req.params.id;
+    let result = null;
+    try {
+        result = await Venues.getOne(venueId);
+    } catch (err) {
+        res.status(500).send('Server Error');
+        return;
+    }
+
+    //console.log(result);
+
+    let data = result[0];
+
+    let categoryInfo = null;
+    try {
+        categoryInfo = await Venues.getCategory(data['venue_id']);
+    } catch (err) {
+        res.status(500).send('Server Error');
+        return;
+    }
+
+    let userInfo = null;
+    try {
+        userInfo = await Venues.getUsername(data['admin_id']);
+    } catch (err) {
+        res.status(500).send('Server Error');
+        return;
+    }
+
+    let username = userInfo[0];
+
+    res.json({venueName: data['venue_name'],
+            admin: {
+                userId: data['admin_id'],
+                username: username['username']
+            },
+            category: {
+                categoryId: data['category_id'],
+                categoryName: categoryInfo[0]['category_name'],
+                categoryDescription: categoryInfo[0]['category_description']
+            },
+            city: data['city'],
+            shortDescription: data['short_description'],
+            longDescription: data['long_description'],
+            dateAdded: data['date_added'],
+            address: data['address'],
+            latitude: data['latitude'],
+            longitude: data['longitude'],
+            photos: [
+                {
+                    photoFilename: "lorem.png",
+                    photoDescription: "lorem ipsum",
+                    isPrimary: false
+                }
+            ]
+        })
+};
