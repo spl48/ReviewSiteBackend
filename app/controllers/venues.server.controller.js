@@ -107,7 +107,10 @@ exports . read = async function (req , res) {
         return;
     }
 
-    //console.log(result);
+    if (result.length === 0) {
+        res.status(404).send('Not Found')
+        return;
+    }
 
     let data = result[0];
 
@@ -154,4 +157,8 @@ exports . read = async function (req , res) {
                 }
             ]
         })
+};
+
+exports . update = async function (req , res) {
+
 };
