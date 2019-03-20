@@ -17,12 +17,12 @@ exports . create = async function (req, res) {
     };
 
     let authToken = data['authorization'];
-    let venueName = data['venueName'].toString();
+    let venueName = data['venueName'];
     let categoryId = data['categoryId'];
-    let city = data['city'].toString();
-    let shortDescription = data['shortDescription'].toString();
-    let longDescription = data['longDescription'].toString();
-    let address = data['address'].toString();
+    let city = data['city'];
+    let shortDescription = data['shortDescription'];
+    let longDescription = data['longDescription'];
+    let address = data['address'];
     let latitude = data['latitude'];
     let longitude = data['longitude'];
 
@@ -90,7 +90,6 @@ exports . create = async function (req, res) {
     let result1 = null;
     try {
         result1 = await Venues.insert(values);
-        console.log(result);
         res.status(201)
         res.json({venueId: result1['insertId']})
     } catch (err) {
