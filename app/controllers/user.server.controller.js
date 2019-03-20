@@ -168,18 +168,23 @@ exports . getUserInfo = async function (req , res) {
 
     let result1 = null;
 
-    try {
-        result1 = await User.authorize(authToken);
-    } catch (err) {
-        console.log(err.type);
-        if (err.type === 'ER_PARSE_ERROR') {
-            authorized = false;
-        } else {
+    if (authToken !== null || authToken !== "") {
+        try {
+            result1 = await User.authorize(authToken);
+        } catch (err) {
+            // console.log(err.type);
+            // if (err.type === 'ER_PARSE_ERROR') {
+            //     authorized = false;
+            // } else {
             console.log(err);
             res.status(500).send('Server Error');
             return;
+
         }
+    } else {
+        authorized = false;
     }
+
 
     if (result1.length !== 0) {
         authorized = true;
