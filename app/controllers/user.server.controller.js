@@ -162,29 +162,25 @@ exports . getUserInfo = async function (req , res) {
     let userID = data['user_id'];
     let authToken = data['authorization'];
 
+    if (authToken === null || authToken === undefined || authToken === "") {
+        authToken = -1;
+    }
+
     let values = [
         userID, authToken
     ];
 
     let result1 = null;
 
-    if (authToken !== null || authToken !== undefined || authToken !== "") {
-        try {
-            result1 = await User.authorize(authToken);
-        } catch (err) {
-            // console.log(err.type);
-            // if (err.type === 'ER_PARSE_ERROR') {
-            //     authorized = false;
-            // } else {
-            console.log(err);
-            res.status(500).send('Server Error');
-            return;
 
-        }
-    } else {
-        authorized = false;
+    try {
+        result1 = await User.authorize(authToken);
+    } catch (err) {
+        console.log(err);
+        res.status(500).send('Server Error');
+        return;
+
     }
-
 
     if (result1.length !== 0) {
         authorized = true;

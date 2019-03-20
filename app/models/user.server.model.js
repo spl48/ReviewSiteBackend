@@ -20,10 +20,8 @@ exports . verify = function(values, authToken, done){
 exports . authorize = async function (authToken) {
     console.log(authToken);
     try {
-        if (authToken !== undefined) {
-            let result = await db.getPool().query('SELECT user_id FROM User WHERE auth_token=?', authToken);
-            return result;
-        }
+        let result = await db.getPool().query('SELECT user_id FROM User WHERE auth_token=?', authToken);
+        return result;
     } catch (err) {
         throw (err);
     }
