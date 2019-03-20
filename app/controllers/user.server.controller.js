@@ -179,7 +179,7 @@ exports . getUserInfo = async function (req , res) {
     let result2 = await User.getUser(values);
 
     if (result2 === 500) {
-        res.status(500).send('Server Error')
+        //res.status(500).send('Server Error')
     } else if (result2.length === 0) {
         res.status(404).send({error: 'Not Found'});
     } else if (authorized && userID.toString() === requestedUser.toString()) {

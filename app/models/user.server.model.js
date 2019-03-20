@@ -26,7 +26,7 @@ exports . authorize = async function (authToken) {
     }
 };
 
-exports . getUser = async function(values) {
+exports . getUser = async function (values) {
     try {
         return await db.getPool().query('SELECT username, email, given_name, family_name FROM User WHERE user_id=?', values);
         //return ('done');
