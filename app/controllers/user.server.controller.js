@@ -217,3 +217,92 @@ exports . getUserInfo = async function (req , res) {
         });
     }
 };
+
+exports . updateUser = async function (req , res) {
+    let authorized = false;
+    let requestedUser = null;
+
+    let data = {
+        "user_id": req.params.id,
+        "authorization": req.header('X-Authorization'),
+        "username": req.body.username,
+        "email": req.body.email,
+        "given_name": req.body.givenName,
+        "family_name": req.body.familyName,
+        "password": req.body.password
+    };
+
+    requestedUser = data['user_id'];
+    let authToken = data['authorization'];
+
+    let username = data['username'];
+    let email = data['email'];
+    let givenName = data['given_name'];
+    let familyName = data['family_name'];
+    let password = data['password'];
+
+    if (authToken === null || authToken === undefined || authToken === "") {
+        authToken = -1;
+    }
+
+    let result1 = null;
+
+    try {
+        result1 = await User.authorize(authToken);
+    } catch (err) {
+        console.log(err);
+        res.status(500).send('Server Error');
+        return;
+
+    }
+
+    let userId = null;
+    if (result1.length !== 0) {
+        authorized = true;
+        userId = result1[0]['user_id'];
+    } else {
+        //userId = "-1";
+        res.status(401).send('Unauthorized');
+        return;
+    }
+
+    if (typeof username == "undefined" && typeof email == "undefined" && typeof givenName == "undefined" && typeof familyName == "undefined" && typeof password == "undefined") {
+        res.status(400).send('Bad Request');
+        return;
+    }
+
+
+    if (username === "" || typeof username == "number" || validateEmail(email) || givenName === "" || typeof givenName == "number" ||
+    familyName === "" || typeof familyName == "number" || password === "" || typeof password == "number") {
+        res.status(400).send('Bad Request');
+        return;
+    }
+    if (userId.toString() !== requestedUser.toString()) {
+        res.status(403).send('Forbidden');
+        return;
+    }
+
+    if (typeof username != "undefined" ) {
+        await User.updateUsername([username, userId]);
+    }
+
+    if (typeof email != "undefined" ) {
+        await User.updateEmail([email, userId]);
+    }
+
+    if (typeof givenName != "undefined" ) {
+        await User.updateGivenName([givenName, userId]);
+    }
+
+    if (typeof familyName != "undefined" ) {
+        await User.updateFamilyName([familyName, userId]);
+    }
+
+    if (typeof password != "undefined" ) {
+        await User.updatePassword([password, userId]);
+    }
+
+    res.status(200).send('OK');
+
+
+}

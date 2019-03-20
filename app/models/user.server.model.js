@@ -18,7 +18,6 @@ exports . verify = function(values, authToken, done){
 };
 
 exports . authorize = async function (authToken) {
-    console.log(authToken);
     try {
         let result = await db.getPool().query('SELECT user_id FROM User WHERE auth_token=?', authToken);
         return result;
@@ -39,6 +38,51 @@ exports . getUser = async function (values) {
 exports . removeToken = async function (userID) {
     try {
         let result = await db.getPool().query('UPDATE User SET auth_token=NULL WHERE user_id=?', userID);
+        return result;
+    } catch (err) {
+        return 500;
+    }
+};
+
+exports . updateUsername = async function (values) {
+    try {
+        let result = await db.getPool().query('UPDATE User SET username=? WHERE user_id=?', values);
+        return result;
+    } catch (err) {
+        return 500;
+    }
+};
+
+exports . updateEmail = async function (values) {
+    try {
+        let result = await db.getPool().query('UPDATE User SET email=? WHERE user_id=?', values);
+        return result;
+    } catch (err) {
+        return 500;
+    }
+};
+
+exports . updateGivenName = async function (values) {
+    try {
+        let result = await db.getPool().query('UPDATE User SET given_name=? WHERE user_id=?', values);
+        return result;
+    } catch (err) {
+        return 500;
+    }
+};
+
+exports . updateFamilyName = async function (values) {
+    try {
+        let result = await db.getPool().query('UPDATE User SET family_name=? WHERE user_id=?', values);
+        return result;
+    } catch (err) {
+        return 500;
+    }
+};
+
+exports . updatePassword = async function (values) {
+    try {
+        let result = await db.getPool().query('UPDATE User SET password=? WHERE user_id=?', values);
         return result;
     } catch (err) {
         return 500;

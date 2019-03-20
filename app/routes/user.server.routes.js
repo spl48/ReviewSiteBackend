@@ -7,5 +7,6 @@ module . exports  =  function ( app ){
     app . route (app.rootUrl + '/users/logout')
         . post(users . logout);
     app . route (app.rootUrl + '/users/:id')
-        . get(users . getUserInfo);
+        . get(users . getUserInfo)
+        . patch(users . updateUser);
 };
