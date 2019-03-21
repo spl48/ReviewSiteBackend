@@ -24,7 +24,7 @@ exports . create  = async function (req , res) {
     try {
         result = await Review.authorize(authToken);
     } catch (err) {
-        res.status(501).send('Server Error');
+        res.status(500).send('Server Error');
         return;
     }
 
@@ -41,7 +41,7 @@ exports . create  = async function (req , res) {
         result2 = await Review.getVenueAdmin(venueId);
     } catch (err) {
         console.log(err);
-        res.status(502).send('Server Error');
+        res.status(500).send('Server Error');
         return;
     }
 
@@ -78,7 +78,7 @@ exports . create  = async function (req , res) {
     try {
         result3 = await Review.checkUsersReviews([venueId, userIdFromToken]);
     } catch (err) {
-        res.status(503).send('Server Error');
+        res.status(500).send('Server Error');
         return;
     }
 
@@ -102,10 +102,41 @@ exports . create  = async function (req , res) {
     try {
         await Review.insert(values);
     } catch (err) {
-        res.status(504).send('Server Error');
+        res.status(500).send('Server Error');
         return;
     }
 
     res.status(201).send('Created');
 
 };
+
+exports . retrieveVenueReviews  = async function (req , res) {
+
+    let venueId = req.params.id;
+    let userId = 1;
+
+    let result = null;
+    try {
+        result = await Review.getAllVenueReviews(userId, venueId);
+    } catch (err) {
+        res.status(500).send('Server Error');
+        return;
+    }
+
+    let output = {};
+    let yoza = [];
+    output.yoza = yoza;
+    for (let i=0; i<result.length; i++) {
+        output.yoza.push({reviewAuthor: {
+                    userId: result[i]['userId'],
+                    username: result[i]['username']
+                    },
+                    reviewBody: result[i]['reviewBody'],
+                    starRating: result[i]['starRating'],
+                    costRating: result[i]['costRating'],
+                    timePosted: result[i]['timePosted']
+                    });
+    };
+    res.json(output['yoza']);
+
+}

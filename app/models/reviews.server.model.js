@@ -35,3 +35,14 @@ exports . insert  =  async function (values) {
         throw (err);
     }
 };
+
+exports . getAllVenueReviews = async function (venueId) {
+    try {
+        let result = db.getPool().query('SELECT review_author_id AS userId, username, review_body AS reviewBody, star_rating AS starRating, cost_rating AS costRating, time_posted AS timePosted ' +
+            'FROM Review JOIN User ON user_id=review_author_id ' +
+            'WHERE reviewed_venue_id=? ORDER BY time_posted DESC', venueId);
+        return result;
+    } catch (err) {
+        throw (err);
+    }
+}
