@@ -17,10 +17,17 @@ exports . upload = async function (req , res) {
     }
 
     let base = 'app/storage/photos/users_' + userId.toString();
-    fs.writeFile( base + "." + type, profilePicture, (err) => {
-        if (err) throw err;
-        res.status(201).send('OK');
+    fs.writeFile( base + "." + type, profilePicture, function (err) {
+        if (err) {
+            res.status(800).send('Error'); //TODO maybe error means file doesn't exist??
+        }
     });
+
+    if (type === "jpg") {
+        res.status(201).send('Created');
+    } else {
+        res.status(200).send('OK');
+    }
 
     // await fs.readFile('resources', (err, data) => {
     //     if (err) throw err;
