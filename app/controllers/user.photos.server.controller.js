@@ -72,7 +72,7 @@ exports . upload = async function (req , res) {
     await fs.writeFile( filename, profilePicture, function (err) {
         if (err) {
             console.log(err);
-            res.status(800).send('Error'); //TODO maybe error means file doesn't exist??
+            res.status(500).send('Error'); //TODO maybe error means file doesn't exist??
             return;
         }
     });
