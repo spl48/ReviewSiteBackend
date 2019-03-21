@@ -75,6 +75,7 @@ exports . upload = async function (req , res) {
     try {
         await fs.writeFileSync(filename, profilePicture)
     } catch (err) {
+        console.log(err);
         res.status(500).send('Error');
         return;
     }
