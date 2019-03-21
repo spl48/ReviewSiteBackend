@@ -272,7 +272,7 @@ exports . update = async function (req , res) {
     }
 
     if (typeof longDescription != "undefined" ) {
-        await Venue.updateName([longDescription, requestedVenue]);
+        await Venue.updateLoDescription([longDescription, requestedVenue]);
     }
 
     if (typeof address != "undefined" ) {
