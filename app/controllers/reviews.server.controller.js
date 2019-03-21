@@ -87,7 +87,6 @@ exports . create  = async function (req , res) {
         return;
     }
 
-    //reviewed_venue_id, review_author_id, review_body, star_rating, cost_rating, time_posted
 
     let time = new Date();
 
