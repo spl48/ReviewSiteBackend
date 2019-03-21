@@ -20,13 +20,16 @@ exports . upload = async function (req , res) {
     fs.writeFile( base + "." + type, profilePicture, function (err) {
         if (err) {
             res.status(800).send('Error'); //TODO maybe error means file doesn't exist??
+            return;
         }
     });
 
     if (type === "jpg") {
         res.status(201).send('Created');
+        return;
     } else {
         res.status(200).send('OK');
+        return;
     }
 
     // await fs.readFile('resources', (err, data) => {
