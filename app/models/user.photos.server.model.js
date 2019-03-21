@@ -17,3 +17,12 @@ exports . authorize = async function (authToken) {
         throw (err);
     }
 };
+
+exports . updatePic = async function (values) {
+    try {
+        let result = await db.getPool().query('UPDATE User SET profile_photo_filename=? where user_id=?', values);
+        return result;
+    } catch (err) {
+        throw (err);
+    }
+};
