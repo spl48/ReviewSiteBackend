@@ -17,10 +17,10 @@ exports . upload = async function (req , res) {
     let type = null;
     if (imageType === "image/png") {
         type = "png";
-    } else if (imageType === "jpg") {
+    } else if (imageType === "image/png") {
         type = "jpg";
     } else {
-        res.status(700).send('Bad Request');
+        res.status(400).send('Bad Request');
         return;
     }
 
