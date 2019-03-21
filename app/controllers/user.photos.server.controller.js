@@ -38,6 +38,10 @@ exports . upload = async function (req , res) {
 
     }
 
+    if (result.length === 0) {
+        res.status(404).send('Not Found')
+    }
+
     let userId = null;
     if (result.length !== 0) {
         userId = result[0]['user_id'];
