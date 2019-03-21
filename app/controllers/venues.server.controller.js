@@ -212,7 +212,6 @@ exports . update = async function (req , res) {
     try {
         result1 = await Venue.authorize(authToken);
     } catch (err) {
-        console.log(err);
         res.status(500).send('Server Error');
         return;
 
@@ -297,3 +296,18 @@ exports . update = async function (req , res) {
 
     res.status(200).send('OK');
 };
+
+exports . readAll = async function (req , res) {
+
+    let result = null;
+    try {
+        result = await Venue.getCategories();
+        console.log(result[0]);
+    } catch (err) {
+        res.status(500).send('Server Error');
+        return;
+    }
+
+    res.json(result);
+
+}

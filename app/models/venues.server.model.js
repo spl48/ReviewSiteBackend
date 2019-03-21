@@ -126,3 +126,13 @@ exports . updateLongitude = async function (values) {
         return 500;
     }
 };
+
+exports . getCategories = async function () {
+    try {
+        let result = await db.getPool().query('SELECT category_id AS categoryId, category_name AS categoryName, category_description AS categoryDescription' +
+            ' FROM VenueCategory');
+        return result;
+    } catch (err) {
+        throw (err);
+    }
+}
