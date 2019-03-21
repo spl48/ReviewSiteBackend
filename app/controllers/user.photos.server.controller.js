@@ -17,7 +17,7 @@ exports . upload = async function (req , res) {
     let type = null;
     if (imageType === "image/png") {
         type = "png";
-    } else if (imageType === "image/jpg") {
+    } else if (imageType === "image/jpeg") {
         type = "jpg";
     } else {
         res.status(700).send('Bad Request');
