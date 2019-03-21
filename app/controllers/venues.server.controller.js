@@ -241,29 +241,21 @@ exports . update = async function (req , res) {
         return;
     }
 
+    // console.log(userId);
+    // console.log(adminId);
     if (userId.toString() !== adminId.toString()) {
         res.status(403).send('Forbidden');
         return;
     }
 
-    if (!Number.isInteger(categoryId) || categoryId < 1 || categoryId > 5) {
-        res.status(400).send('Bad Request');
-        return;
-    }
-
-    if (latitude == null || latitude > 90 || latitude < -90) {
-        res.status(400).send({error: 'Bad Request'});
-        return;
-    }
-
-    if (longitude == null || longitude > 180 || longitude < -180) {
-        res.status(400).send({error: 'Bad Request'});
-        return;
-    }
-
 
     if (typeof categoryId != "undefined") {
-        await Venue.updateCategoryId([categoryId, requestedVenue]);
+        if (!Number.isInteger(categoryId) || categoryId < 1 || categoryId > 5) {
+            res.status(400).send('Bad Request');
+            return;
+        } else {
+            await Venue.updateCategoryId([categoryId, requestedVenue]);
+        }
     }
 
     if (typeof venueName != "undefined" ) {
@@ -288,10 +280,18 @@ exports . update = async function (req , res) {
     }
 
     if (typeof latitude != "undefined" ) {
+        if (latitude == null || latitude > 90 || latitude < -90) {
+            res.status(400).send('Bad Request');
+            return;
+        }
         await Venue.updateLatitude([latitude, requestedVenue]);
     }
 
     if (typeof longitude != "undefined" ) {
+        if (longitude == null || longitude > 180 || longitude < -180) {
+            res.status(400).send('Bad Request');
+            return;
+        }
         await Venue.updateLongitude([longitude, requestedVenue]);
     }
 
