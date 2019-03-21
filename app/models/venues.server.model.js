@@ -44,4 +44,85 @@ exports . getUsername = async function (userId) {
     } catch (err) {
         throw (err);
     }
-}
+};
+
+exports . updateCategoryId = async function (values) {
+    try {
+        let result = await db.getPool().query('UPDATE Venue SET category_id=? WHERE venue_id=?', values);
+        return result;
+    } catch (err) {
+        return 500;
+    }
+};
+
+exports . updateName = async function (values) {
+    try {
+        let result = await db.getPool().query('UPDATE Venue SET venue_name=? WHERE venue_id=?', values);
+        return result;
+    } catch (err) {
+        return 500;
+    }
+};
+
+exports . updateCity = async function (values) {
+    try {
+        let result = await db.getPool().query('UPDATE Venue SET city=? WHERE venue_id=?', values);
+        return result;
+    } catch (err) {
+        return 500;
+    }
+};
+
+exports . updateShDescription = async function (values) {
+    try {
+        let result = await db.getPool().query('UPDATE Venue SET short_description=? WHERE venue_id=?', values);
+        return result;
+    } catch (err) {
+        return 500;
+    }
+};
+
+exports . updateLoDescription = async function (values) {
+    try {
+        let result = await db.getPool().query('UPDATE Venue SET long_description=? WHERE venue_id=?', values);
+        return result;
+    } catch (err) {
+        return 500;
+    }
+};
+
+exports . updateDateAdded = async function (values) {
+    try {
+        let result = await db.getPool().query('UPDATE Venue SET date_added=? WHERE venue_id=?', values);
+        return result;
+    } catch (err) {
+        return 500;
+    }
+};
+
+exports . updateAddress = async function (values) {
+    try {
+        let result = await db.getPool().query('UPDATE Venue SET address=? WHERE venue_id=?', values);
+        return result;
+    } catch (err) {
+        return 500;
+    }
+};
+
+exports . updateLatitude = async function (values) {
+    try {
+        let result = await db.getPool().query('UPDATE Venue SET latitude=? WHERE venue_id=?', values);
+        return result;
+    } catch (err) {
+        return 500;
+    }
+};
+
+exports . updateLongitude = async function (values) {
+    try {
+        let result = await db.getPool().query('UPDATE Venue SET longitude=? WHERE venue_id=?', values);
+        return result;
+    } catch (err) {
+        return 500;
+    }
+};
