@@ -69,13 +69,15 @@ exports . upload = async function (req , res) {
     }
 
     let filename = 'app/storage/photos/users_' + userId.toString() + "." + type;
-    await fs.writeFile( filename, profilePicture, function (err) {
-        if (err) {
-            console.log(err);
-            res.status(500).send('Error'); //TODO maybe error means file doesn't exist??
-            return;
-        }
-    });
+
+
+
+    try {
+        await fs.writeFileSync(filename, profilePicture)
+    } catch (err) {
+        res.status(500).send('Error');
+        return;
+    }
 
     let result1 = null;
     try {
