@@ -54,7 +54,6 @@ exports . upload = async function (req , res) {
     try {
         result2 = await UserPhoto.getUser(requestedUserId);
     } catch (err) {
-        console.log(err);
         res.status(500).send('Server Error');
         return;
     }
@@ -72,6 +71,7 @@ exports . upload = async function (req , res) {
     let filename = 'app/storage/photos/users_' + userId.toString() + "." + type;
     fs.writeFile( filename, profilePicture, function (err) {
         if (err) {
+            console.log(err);
             res.status(800).send('Error'); //TODO maybe error means file doesn't exist??
             return;
         }
@@ -83,10 +83,9 @@ exports . upload = async function (req , res) {
     } catch (err) {
         res.status(500).send('Server Error');
         return;
-
     }
 
-    if (type === "jpg") {
+    if (result1['changedRows'] === 1) {
         res.status(201).send('Created');
         return;
     } else {
@@ -98,4 +97,14 @@ exports . upload = async function (req , res) {
     //     if (err) throw err;
     //     console.log(data);
     // });
+
+    // OkPacket {
+    //     fieldCount: 0,
+    //         affectedRows: 1,
+    //         insertId: 0,
+    //         serverStatus: 2,
+    //         warningCount: 0,
+    //         message: '(Rows matched: 1  Changed: 1  Warnings: 0',
+    //         protocol41: true,
+    //         changedRows: 1 }
 };
