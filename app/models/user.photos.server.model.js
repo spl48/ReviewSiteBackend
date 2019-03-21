@@ -8,3 +8,12 @@ exports . insert = async function (filename) {
         throw (err);
     }
 };
+
+exports . authorize = async function (authToken) {
+    try {
+        let result = await db.getPool().query('SELECT user_id FROM User WHERE auth_token=?', authToken);
+        return result;
+    } catch (err) {
+        throw (err);
+    }
+};
