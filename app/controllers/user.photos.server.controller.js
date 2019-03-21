@@ -14,6 +14,10 @@ exports . upload = async function (req , res) {
     let profilePicture = data['profile_picture'];
     let imageType = data['image_type'];
 
+    if (profilePicture.length === 0) {
+        res.status(400).send('Bad Request');
+    }
+
     let type = null;
     if (imageType === "image/png") {
         type = "png";
