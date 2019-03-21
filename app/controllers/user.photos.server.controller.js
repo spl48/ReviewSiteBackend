@@ -88,6 +88,7 @@ exports . upload = async function (req , res) {
         return;
     }
 
+    console.log(result1);
     if (result1['changedRows'] === 1) {
         res.status(201).send('Created');
         return;
