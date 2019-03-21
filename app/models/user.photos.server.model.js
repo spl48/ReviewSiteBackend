@@ -26,3 +26,12 @@ exports . updatePic = async function (values) {
         throw (err);
     }
 };
+
+exports . getUser = async function (userId) {
+    try {
+        let result =  await db.getPool().query('SELECT * FROM User WHERE user_id=?', userId);
+        return result;
+    } catch (err) {
+        throw (err);
+    }
+};

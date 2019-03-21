@@ -38,15 +38,25 @@ exports . upload = async function (req , res) {
 
     }
 
-    if (result.length === 0) {
-        res.status(404).send('Not Found')
-    }
-
     let userId = null;
     if (result.length !== 0) {
         userId = result[0]['user_id'];
     } else {
         res.status(401).send('Unauthorized');
+        return;
+    }
+
+    let result2 = null;
+    try {
+        result2 = await UserPhoto.getUser(requestedUserId);
+    } catch (err) {
+        console.log(err);
+        res.status(500).send('Server Error');
+        return;
+    }
+
+    if (result2.length === 0) {
+        res.status(404).send('Not Found');
         return;
     }
 
