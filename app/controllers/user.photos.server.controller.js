@@ -124,7 +124,7 @@ exports . retrieve = async function (req , res) {
     let requestedUserId = req.params.id;
 
     if (authToken === null || authToken === undefined || authToken === "") {
-        res.status(401).send('Unauthorized');
+        res.status(405).send('Unauthorized');
         return;
     }
 
@@ -140,7 +140,7 @@ exports . retrieve = async function (req , res) {
     if (result.length !== 0) {
         userId = result[0]['user_id'];
     } else {
-        res.status(401).send('Unauthorized');
+        res.status(408).send('Unauthorized');
         return;
     }
 
