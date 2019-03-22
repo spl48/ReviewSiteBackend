@@ -205,7 +205,7 @@ exports . retrieve = async function (req , res) {
     }
 
     if (result.length === 0) {
-        res.status(404).send('Not Found');
+        res.status(405).send('Not Found');
         return;
     }
 
@@ -218,7 +218,7 @@ exports . retrieve = async function (req , res) {
     }
 
     if (dbFilename.length === 0) {
-        res.status(404).send('Not Found');
+        res.status(406).send('Not Found');
         return;
     }
 
