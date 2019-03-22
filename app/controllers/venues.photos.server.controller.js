@@ -210,7 +210,7 @@ exports . retrieve = async function (req , res) {
     }
 
     // console.log(requestedVenueId);
-    // console.log(filename);
+    console.log(filename);
     // fs.readdir(base, function (err, files) {
     //     //handling error
     //     if (err) {
@@ -223,8 +223,8 @@ exports . retrieve = async function (req , res) {
     //     });
     // });
 
-    let yoza = await VenuePhoto.yoza();
-    console.log(yoza);
+    // let yoza = await VenuePhoto.yoza();
+    // console.log(yoza);
 
     let dbFilename = null;
     try {
