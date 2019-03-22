@@ -25,7 +25,7 @@ exports . upload = async function (req , res) {
     } else if (imageType === "image/jpeg") {
         type = "jpg";
     } else {
-        res.status(700).send('Bad Request');
+        res.status(400).send('Bad Request');
         return;
     }
 
@@ -129,6 +129,7 @@ exports . retrieve = async function (req , res) {
     let authToken = data['authorization'];
     let requestedUserId = data['user_id'];
 
+    console.log(authToken);
     if (authToken === null || authToken === undefined || authToken === "") {
         res.status(405).send('Unauthorized');
         return;
