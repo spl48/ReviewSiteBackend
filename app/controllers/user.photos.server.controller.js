@@ -120,36 +120,7 @@ exports . upload = async function (req , res) {
 
 exports . retrieve = async function (req , res) {
 
-    let data = {
-        "authorization": req.header('X-Authorization'),
-        "user_id": req.params.id
-    };
-
-    let authToken = data['authorization'];
-    let requestedUserId = data['user_id'];
-
-    console.log(req);
-    console.log(req.header('X-Authorization'));
-    if (authToken === null || authToken === undefined || authToken === "") {
-        res.status(405).send('Unauthorized');
-        return;
-    }
-
-    let result = null;
-    try {
-        result = await UserPhoto.authorize(authToken);
-    } catch (err) {
-        res.status(500).send('Server Error');
-        return;
-    }
-
-    let userId = null;
-    if (result.length !== 0) {
-        userId = result[0]['user_id'];
-    } else {
-        res.status(408).send('Unauthorized');
-        return;
-    }
+    let requestedUserId = req.params.id;
 
     let result2 = null;
     try {
@@ -166,7 +137,7 @@ exports . retrieve = async function (req , res) {
 
     let dbPicture = null;
     try {
-        dbPicture = await UserPhoto.getPicture(userId);
+        dbPicture = await UserPhoto.getPicture(requestedUserId);
     } catch (err) {
         res.status(500).send('Server Error');
         return;
