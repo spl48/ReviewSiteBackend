@@ -27,7 +27,7 @@ exports . upload = async function (req , res) {
         return;
     }
 
-    console.log(buffer);
+    console.log(req);
 
     if (buffer[0] === undefined || description === undefined || description === "" || description === null) {
         res.status(400).send('Bad Request');
