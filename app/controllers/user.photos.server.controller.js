@@ -165,6 +165,7 @@ exports . retrieve = async function (req , res) {
         fileType = "image/jpeg";
     } else {
         res.status(400).send('Bad Request');
+        return;
     }
 
     res.append('content-type', fileType);
