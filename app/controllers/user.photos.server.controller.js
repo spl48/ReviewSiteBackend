@@ -152,12 +152,22 @@ exports . retrieve = async function (req , res) {
 
     let picture = null;
     try {
-        await fs.readFileSync(filename)
+        picture = await fs.readFileSync(filename)
     } catch (err) {
         res.status(500).send('Error');
         return;
     }
 
+    let fileType = filename.slice(-3);
+    if (fileType === "png") {
+        fileType = "image/png";
+    } else if (fileType === "jpg") {
+        fileType = "image/jpeg";
+    } else {
+        res.status(400).send('Bad Request');
+    }
+
+    res.append('content-type', fileType);
     res.status(200).send(picture);
 
 };
