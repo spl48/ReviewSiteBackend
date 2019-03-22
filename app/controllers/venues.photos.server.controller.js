@@ -71,7 +71,6 @@ exports . upload = async function (req , res) {
         requestedVenueAdminId = result2[0]['admin_id']
     }
 
-
     if (requestedVenueAdminId.toString() !== userId.toString()) {
         res.status(403).send('Forbidden');
         return;
