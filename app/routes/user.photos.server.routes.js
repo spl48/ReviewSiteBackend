@@ -3,4 +3,5 @@ module . exports  =  function ( app ){
     app . route (app.rootUrl + '/users/:id/photo')
         . put(users . upload)
         . get(users . retrieve)
+        . delete(users . delete)
 };

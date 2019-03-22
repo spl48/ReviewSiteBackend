@@ -170,5 +170,86 @@ exports . retrieve = async function (req , res) {
 
     res.append('content-type', fileType);
     res.status(200).send(picture);
+};
+
+exports . delete = async function (req , res) {
+    let data = {
+        "authorization": req.header('X-Authorization'),
+        "user_id": req.params.id
+    };
+
+    let authToken = data['authorization'];
+    let requestedUserId = data['user_id'];
+
+    if (authToken === null || authToken === undefined || authToken === "") {
+        res.status(401).send('Unauthorized');
+        return;
+    }
+
+    let result = null;
+    try {
+        result = await UserPhoto.authorize(authToken);
+    } catch (err) {
+        res.status(500).send('Server Error');
+        return;
+
+    }
+
+    let userId = null;
+    if (result.length !== 0) {
+        userId = result[0]['user_id'];
+    } else {
+        res.status(401).send('Unauthorized');
+        return;
+    }
+
+    let result2 = null;
+    try {
+        result2 = await UserPhoto.getUser(requestedUserId);
+    } catch (err) {
+        res.status(500).send('Server Error');
+        return;
+    }
+
+    if (result2.length === 0) {
+        res.status(404).send('Not Found');
+        return;
+    }
+
+    if (requestedUserId.toString() !== userId.toString()) {
+        res.status(403).send('Forbidden');
+        return;
+    }
+
+    let dbPicture = null;
+    try {
+        dbPicture = await UserPhoto.getPicture(requestedUserId);
+    } catch (err) {
+        res.status(500).send('Server Error');
+        return;
+    }
+
+    let filename = dbPicture[0]['profile_photo_filename'];
+
+    if (filename == null) {
+        res.status(404).send('Not Found');
+        return;
+    }
+
+    try {
+        await UserPhoto.updatePic([null, userId]);
+    } catch (err) {
+        res.status(500).send('Server Error');
+        return;
+    }
+
+    try {
+        await fs.unlinkSync(filename);
+    } catch (err) {
+        res.status(500).send('Server Error');
+        return;
+    }
+
+    res.status(200).send('OK');
 
 };

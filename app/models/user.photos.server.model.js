@@ -20,7 +20,7 @@ exports . authorize = async function (authToken) {
 
 exports . updatePic = async function (values) {
     try {
-        let result = await db.getPool().query('UPDATE User SET profile_photo_filename=? where user_id=?', values);
+        let result = await db.getPool().query('UPDATE User SET profile_photo_filename=? WHERE user_id=?', values);
         return result;
     } catch (err) {
         throw (err);
@@ -43,4 +43,13 @@ exports . getPicture = async function (userId) {
     } catch (err) {
         throw (err);
     }
-}
+};
+
+exports . deletePicture = async function (userId) {
+    try {
+        let result = await db.getPool().query('UPDATE User SET profile_photo_filename=NULL WHERE user_id=?', userId);
+        return result;
+    } catch (err) {
+        throw (err);
+    }
+};
