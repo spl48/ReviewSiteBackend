@@ -16,6 +16,7 @@ exports . upload = async function (req , res) {
 
     if (profilePicture.length === 0) {
         res.status(400).send('Bad Request');
+        return;
     }
 
     let type = null;
