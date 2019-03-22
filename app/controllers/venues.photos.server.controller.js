@@ -184,3 +184,65 @@ exports . setPrimary = async function (req , res) {
 
     res.status(200).send('OK');
 };
+
+exports . retrieve = async function (req , res) {
+    let data = {
+        "venue_id": req.params.id,
+        "filename": req.params.filename,
+    };
+
+    let requestedVenueId = data['venue_id'];
+    let filename = data['filename'];
+
+    let base = 'app/storage/photos/';
+
+    let result = null;
+    try {
+        result = await VenuePhoto.getVenue(requestedVenueId);
+    } catch (err) {
+        res.status(500).send('Server Error');
+        return;
+    }
+
+    if (result.length === 0) {
+        res.status(404).send('Not Found');
+        return;
+    }
+
+    let dbFilename = null;
+    try {
+        dbFilename = await VenuePhoto.getPicture(requestedVenueId, filename);
+    } catch (err) {
+        res.status(500).send('Server Error');
+        return;
+    }
+
+    if (dbFilename.length === 0) {
+        res.status(404).send('Not Found');
+        return;
+    }
+
+    let picture = null;
+    try {
+        picture = await fs.readFileSync(base + filename)
+    } catch (err) {
+        console.log(err);
+        res.status(500).send('Error');
+        return;
+    }
+
+    let fileType = filename.slice(-3);
+    if (fileType === "png") {
+        fileType = "image/png";
+    } else if (fileType === "jpg") {
+        fileType = "image/jpeg";
+    } else {
+        res.status(400).send('Bad Request');
+        return;
+    }
+
+    res.append('content-type', fileType);
+    res.status(200).send(picture);
+
+
+}

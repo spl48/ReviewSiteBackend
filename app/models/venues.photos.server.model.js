@@ -44,3 +44,21 @@ exports . makePrimaryWithFilename = async function (filename) {
         throw (err);
     }
 };
+
+exports . getPicture = async function (venueId, filename) {
+    try {
+        let result = await db.getPool().query('SELECT * FROM VenuePhoto WHERE venue_id=? AND photo_filename=?', [venueId, filename]);
+        return result;
+    } catch (err) {
+        throw (err);
+    }
+};
+
+exports . getVenue = async function (venueId) {
+    try {
+        let result = db.getPool().query('SELECT * FROM Venue WHERE venue_id=?', venueId);
+        return result;
+    } catch (err) {
+        throw (err);
+    }
+};
