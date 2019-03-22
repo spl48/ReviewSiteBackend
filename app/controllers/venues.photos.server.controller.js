@@ -92,6 +92,7 @@ exports . upload = async function (req , res) {
         description,
         isPrimary
     ];
+
     try {
         await VenuePhoto.addVenuePhoto(values);
     } catch (err) {
