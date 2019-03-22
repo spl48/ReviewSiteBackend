@@ -135,4 +135,4 @@ exports . getCategories = async function () {
     } catch (err) {
         throw (err);
     }
-}
+};

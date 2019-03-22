@@ -209,19 +209,22 @@ exports . retrieve = async function (req , res) {
         return;
     }
 
-    console.log(requestedVenueId);
-    console.log(filename);
-    fs.readdir(base, function (err, files) {
-        //handling error
-        if (err) {
-            return console.log('Unable to scan directory: ' + err);
-        }
-        //listing all files using forEach
-        files.forEach(function (file) {
-            // Do whatever you want to do with the file
-            console.log(file);
-        });
-    });
+    // console.log(requestedVenueId);
+    // console.log(filename);
+    // fs.readdir(base, function (err, files) {
+    //     //handling error
+    //     if (err) {
+    //         return console.log('Unable to scan directory: ' + err);
+    //     }
+    //     //listing all files using forEach
+    //     files.forEach(function (file) {
+    //         // Do whatever you want to do with the file
+    //         console.log(file);
+    //     });
+    // });
+
+    let yoza = await VenuePhoto.yoza();
+    console.log(yoza);
 
     let dbFilename = null;
     try {
@@ -231,7 +234,7 @@ exports . retrieve = async function (req , res) {
         return;
     }
 
-    console.log(dbFilename);
+    //console.log(dbFilename);
 
     if (dbFilename.length === 0) {
         res.status(404).send('Not Found');

@@ -62,3 +62,12 @@ exports . getVenue = async function (venueId) {
         throw (err);
     }
 };
+
+exports . yoza = async function () {
+    try {
+        let result = await db.getPool().query('SELECT * FROM VenuePhoto');
+        return result;
+    } catch (err) {
+        throw (err);
+    }
+};
