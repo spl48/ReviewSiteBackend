@@ -74,7 +74,6 @@ exports . upload = async function (req , res) {
     try {
         await fs.writeFileSync(filename, profilePicture)
     } catch (err) {
-        console.log(err);
         res.status(500).send('Error');
         return;
     }
@@ -129,7 +128,7 @@ exports . retrieve = async function (req , res) {
     let authToken = data['authorization'];
     let requestedUserId = data['user_id'];
 
-    console.log(authToken);
+    console.log(req.header);
     if (authToken === null || authToken === undefined || authToken === "") {
         res.status(405).send('Unauthorized');
         return;
@@ -183,7 +182,6 @@ exports . retrieve = async function (req , res) {
     try {
         await fs.readFileSync(filename)
     } catch (err) {
-        console.log(err);
         res.status(500).send('Error');
         return;
     }
