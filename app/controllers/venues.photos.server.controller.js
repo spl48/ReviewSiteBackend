@@ -76,13 +76,24 @@ exports . upload = async function (req , res) {
         return;
     }
 
-    let filename = 'app/storage/photos/' + buffer[0]['originalname'];
+    let base = 'app/storage/photos/';
+    let filename = buffer[0]['originalname'];
 
     try {
-        await fs.writeFileSync(filename, picture);
+        await fs.writeFileSync(base + filename, picture);
     } catch (err) {
         res.status(500).send('Error');
         return;
+    }
+
+    if (makePrimary) {
+        try {
+            await VenuePhoto.makePrimary(requestedVenueId);
+        } catch (err) {
+            console.log(err);
+            res.status(500).send('Server Error');
+            return;
+        }
     }
 
     let values = [
@@ -101,4 +112,75 @@ exports . upload = async function (req , res) {
     }
 
     res.status(201).send('Created');
+};
+
+exports . setPrimary = async function (req , res) {
+    let data = {
+        "authorization": req.header('X-Authorization'),
+        "venue_id": req.params.id,
+        "filename": req.params.filename,
+    };
+
+    let authToken = data['authorization'];
+    let requestedVenueId = data['venue_id'];
+    let filename = data['filename'];
+
+    if (authToken === null || authToken === undefined || authToken === "") {
+        res.status(401).send('Unauthorized');
+        return;
+    }
+
+    let result = null;
+    try {
+        result = await VenuePhoto.authorize(authToken);
+    } catch (err) {
+        res.status(500).send('Server Error');
+        return;
+    }
+
+    let userId = null;
+    if (result.length !== 0) {
+        userId = result[0]['user_id'];
+    } else {
+        res.status(401).send('Unauthorized');
+        return;
+    }
+
+    let result2 = null;
+    try {
+        result2 = await VenuePhoto.getVenueAdmin(requestedVenueId);
+    } catch (err) {
+        res.status(500).send('Server Error');
+        return;
+    }
+
+    let requestedVenueAdminId = null;
+    if (result2.length === 0) {
+        res.status(404).send('Not Found');
+        return;
+    } else {
+        requestedVenueAdminId = result2[0]['admin_id']
+    }
+
+    if (requestedVenueAdminId.toString() !== userId.toString()) {
+        res.status(403).send('Forbidden');
+        return;
+    }
+
+    let result3 = null;
+    try {
+        await VenuePhoto.makePrimary(requestedVenueId);
+        result3 = await VenuePhoto.makePrimaryWithFilename(filename);
+    } catch (err) {
+        console.log(err);
+        res.status(500).send('Server Error');
+        return;
+    }
+
+    if (result3['affectedRows'] === 0) {
+        res.status(404).send('Not Found');
+        return;
+    }
+
+    res.status(200).send('OK');
 };

@@ -25,4 +25,22 @@ exports . addVenuePhoto = async function (values) {
     } catch (err) {
         throw (err);
     }
-}
+};
+
+exports . makePrimary = async function (venueId) {
+    try {
+        let result =  await db.getPool().query('UPDATE VenuePhoto SET is_primary=0 WHERE venue_id=?', venueId);
+        return result;
+    } catch (err) {
+        throw (err);
+    }
+};
+
+exports . makePrimaryWithFilename = async function (filename) {
+    try {
+        await db.getPool().query('UPDATE VenuePhoto SET is_primary=1 WHERE photo_filename=?', filename);
+        return result;
+    } catch (err) {
+        throw (err);
+    }
+};
