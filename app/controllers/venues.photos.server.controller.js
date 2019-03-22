@@ -209,6 +209,9 @@ exports . retrieve = async function (req , res) {
         return;
     }
 
+    console.log(requestedVenueId);
+    console.log(filename);
+
     let dbFilename = null;
     try {
         dbFilename = await VenuePhoto.getPicture(requestedVenueId, filename);
