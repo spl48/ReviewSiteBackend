@@ -302,7 +302,6 @@ exports . readAll = async function (req , res) {
     let result = null;
     try {
         result = await Venue.getCategories();
-        console.log(result[0]);
     } catch (err) {
         res.status(500).send('Server Error');
         return;

@@ -128,7 +128,8 @@ exports . retrieve = async function (req , res) {
     let authToken = data['authorization'];
     let requestedUserId = data['user_id'];
 
-    console.log(req.header);
+    console.log(req);
+    console.log(req.header('X-Authorization'));
     if (authToken === null || authToken === undefined || authToken === "") {
         res.status(405).send('Unauthorized');
         return;
