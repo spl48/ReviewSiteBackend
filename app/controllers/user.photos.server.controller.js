@@ -87,8 +87,6 @@ exports . upload = async function (req , res) {
         return;
     }
 
-    console.log(dbPicture[0]['profile_photo_filename']);
-
     let result1 = null;
     try {
         result1 = await UserPhoto.updatePic([filename, userId]);
@@ -118,5 +116,71 @@ exports . upload = async function (req , res) {
     //     if (err) throw err;
     //     console.log(data);
     // });
+
+};
+
+exports . retrieve = async function (req , res) {
+    let authToken = req.header('X-Authorization');
+    let requestedUserId = req.params.id;
+
+    if (authToken === null || authToken === undefined || authToken === "") {
+        res.status(401).send('Unauthorized');
+        return;
+    }
+
+    let result = null;
+    try {
+        result = await UserPhoto.authorize(authToken);
+    } catch (err) {
+        res.status(500).send('Server Error');
+        return;
+    }
+
+    let userId = null;
+    if (result.length !== 0) {
+        userId = result[0]['user_id'];
+    } else {
+        res.status(401).send('Unauthorized');
+        return;
+    }
+
+    let result2 = null;
+    try {
+        result2 = await UserPhoto.getUser(requestedUserId);
+    } catch (err) {
+        res.status(500).send('Server Error');
+        return;
+    }
+
+    if (result2.length === 0) {
+        res.status(404).send('Not Found');
+        return;
+    }
+
+    let dbPicture = null;
+    try {
+        dbPicture = await UserPhoto.getPicture(userId);
+    } catch (err) {
+        res.status(500).send('Server Error');
+        return;
+    }
+
+    let filename = dbPicture[0]['profile_photo_filename'];
+
+    if (filename === null) {
+        res.status(404).send('Not Found');
+        return;
+    }
+
+    let picture = null;
+    try {
+        await fs.readFileSync(filename)
+    } catch (err) {
+        console.log(err);
+        res.status(500).send('Error');
+        return;
+    }
+
+    res.status(200).send(picture);
 
 };
