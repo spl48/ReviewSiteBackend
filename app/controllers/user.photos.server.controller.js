@@ -120,8 +120,14 @@ exports . upload = async function (req , res) {
 };
 
 exports . retrieve = async function (req , res) {
-    let authToken = req.header('X-Authorization');
-    let requestedUserId = req.params.id;
+
+    let data = {
+        "authorization": req.header('X-Authorization'),
+        "user_id": req.params.id
+    };
+
+    let authToken = data['authorization'];
+    let requestedUserId = data['user_id'];
 
     if (authToken === null || authToken === undefined || authToken === "") {
         res.status(405).send('Unauthorized');
