@@ -70,8 +70,6 @@ exports . upload = async function (req , res) {
 
     let filename = 'app/storage/photos/users_' + userId.toString() + "." + type;
 
-
-
     try {
         await fs.writeFileSync(filename, profilePicture)
     } catch (err) {
@@ -79,6 +77,16 @@ exports . upload = async function (req , res) {
         res.status(500).send('Error');
         return;
     }
+
+    let dbPicture = null;
+    try {
+        dbPicture = await UserPhoto.getPicture(userId);
+    } catch (err) {
+        res.status(500).send('Server Error');
+        return;
+    }
+
+    console.log(dbPicture[0]['profile_photo_filename']);
 
     let result1 = null;
     try {
@@ -88,14 +96,22 @@ exports . upload = async function (req , res) {
         return;
     }
 
-    console.log(result1);
-    if (result1['changedRows'] === 1) {
+    if (dbPicture[0]['profile_photo_filename'] === null) {
         res.status(201).send('Created');
         return;
     } else {
         res.status(200).send('OK');
         return;
     }
+
+    // console.log(result1);
+    // if (result1['changedRows'] === 1) {
+    //     res.status(201).send('Created');
+    //     return;
+    // } else {
+    //     res.status(200).send('OK');
+    //     return;
+    // }
 
     // await fs.readFile('resources', (err, data) => {
     //     if (err) throw err;

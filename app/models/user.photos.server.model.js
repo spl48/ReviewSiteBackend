@@ -35,3 +35,12 @@ exports . getUser = async function (userId) {
         throw (err);
     }
 };
+
+exports . getPicture = async function (userId) {
+    try {
+        let result = await db.getPool().query('SELECT profile_photo_filename FROM User WHERE user_id=?', userId);
+        return result;
+    } catch (err) {
+        throw (err);
+    }
+}
