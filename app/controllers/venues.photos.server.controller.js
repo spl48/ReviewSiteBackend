@@ -10,6 +10,8 @@ exports . upload = async function (req , res) {
         "makePrimary": req.body['makePrimary']
     };
 
+    console.log(data['picture'][0]['originalname'] + " upload");
+
     let authToken = data['authorization'];
     let requestedVenueId = data['venue_id'];
     let buffer = data['picture'];
@@ -78,8 +80,6 @@ exports . upload = async function (req , res) {
 
     let base = 'app/storage/photos/';
     let filename = buffer[0]['originalname'];
-
-    console.log(filename + " upload");
 
     try {
         await fs.writeFileSync(base + filename, picture);
@@ -190,6 +190,8 @@ exports . retrieve = async function (req , res) {
         "filename": req.params.filename,
     };
 
+    console.log(req.params.filename + " from URL");
+
     let requestedVenueId = data['venue_id'];
     let filename = data['filename'];
 
@@ -209,7 +211,6 @@ exports . retrieve = async function (req , res) {
     }
 
     // console.log(requestedVenueId);
-    console.log(filename + " from URL");
     // fs.readdir(base, function (err, files) {
     //     //handling error
     //     if (err) {
