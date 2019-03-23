@@ -63,9 +63,9 @@ exports . getVenue = async function (venueId) {
     }
 };
 
-exports . yoza = async function () {
+exports . checkPrimary = async function (venueId) {
     try {
-        let result = await db.getPool().query('SELECT * FROM VenuePhoto');
+        let result = await db.getPool().query('SELECT * FROM VenuePhoto WHERE venue_id=? AND is_primary=1', venueId);
         return result;
     } catch (err) {
         throw (err);

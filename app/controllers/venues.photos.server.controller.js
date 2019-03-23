@@ -10,8 +10,6 @@ exports . upload = async function (req , res) {
         "makePrimary": req.body['makePrimary']
     };
 
-    console.log(req.files);
-
     let authToken = data['authorization'];
     let requestedVenueId = data['venue_id'];
     let buffer = data['picture'];
@@ -86,6 +84,19 @@ exports . upload = async function (req , res) {
     } catch (err) {
         res.status(500).send('Error');
         return;
+    }
+
+    let primaryCheck = null;
+    try {
+        primaryCheck = await VenuePhoto.checkPrimary(requestedVenueId);
+    } catch (err) {
+        res.status(500).send('Error');
+        return;
+    }
+
+    console.log(primaryCheck);
+    if (primaryCheck.length === 0) {
+        isPrimary = true;
     }
 
     if (makePrimary) {
@@ -189,8 +200,6 @@ exports . retrieve = async function (req , res) {
         "venue_id": req.params.id,
         "filename": req.params.filename,
     };
-
-    console.log(req.params.filename + " from URL");
 
     let requestedVenueId = data['venue_id'];
     let filename = data['filename'];
