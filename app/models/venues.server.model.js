@@ -118,10 +118,10 @@ exports . updateLongitude = async function (values) {
     }
 };
 
-exports . getCategories = async function () {
+exports . getCategories = async function (categoryId) {
     try {
         let result = await db.getPool().query('SELECT category_id AS categoryId, category_name AS categoryName, category_description AS categoryDescription' +
-            ' FROM VenueCategory');
+            ' FROM VenueCategory WHERE category_id=?', categoryId);
         return result;
     } catch (err) {
         throw (err);
