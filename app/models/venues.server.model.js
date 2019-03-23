@@ -136,3 +136,12 @@ exports . getCategories = async function () {
         throw (err);
     }
 };
+
+exports . getVenuePhoto = async function (venueId) {
+    try {
+        let result = await db.getPool().query('SELECT photo_filename AS photoFilename, photo_description AS photoDescription, is_primary AS isPrimary FROM VenuePhoto WHERE venue_id=?', venueId);
+        return result;
+    } catch (err) {
+        throw (err);
+    }
+};

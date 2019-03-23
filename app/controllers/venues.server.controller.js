@@ -129,19 +129,23 @@ exports . read = async function (req , res) {
         res.status(500).send('Server Error');
         return;
     }
-
     let username = userInfo[0];
+
+    let photoInfo = null;
+    try {
+        photoInfo = await Venue.getVenuePhoto(venueId);
+    } catch (err) {
+        res.status(500).send('Server Error');
+        return;
+    }
+
 
     res.json({venueName: data['venue_name'],
             admin: {
                 userId: data['admin_id'],
                 username: username['username']
             },
-            category: {
-                categoryId: data['category_id'],
-                categoryName: categoryInfo[0]['category_name'],
-                categoryDescription: categoryInfo[0]['category_description']
-            },
+            category: categoryInfo[0],
             city: data['city'],
             shortDescription: data['short_description'],
             longDescription: data['long_description'],
@@ -149,13 +153,7 @@ exports . read = async function (req , res) {
             address: data['address'],
             latitude: data['latitude'],
             longitude: data['longitude'],
-            photos: [
-                {
-                    photoFilename: "lorem.png",
-                    photoDescription: "lorem ipsum",
-                    isPrimary: false
-                }
-            ]
+            photos: photoInfo
         })
 };
 
