@@ -134,13 +134,14 @@ exports . read = async function (req , res) {
     let photoInfo = null;
     try {
         photoInfo = await Venue.getVenuePhoto(venueId);
+        photoInfo[0]['isPrimary'] = photoInfo[0]['isPrimary'] !== 0;
     } catch (err) {
         res.status(500).send('Server Error');
         return;
     }
 
 
-    await photoInfo[0]['isPrimary'] = photoInfo[0]['isPrimary'] !== 0;
+
 
     res.json({venueName: data['venue_name'],
             admin: {
