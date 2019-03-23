@@ -79,6 +79,8 @@ exports . upload = async function (req , res) {
     let base = 'app/storage/photos/';
     let filename = buffer[0]['originalname'];
 
+    console.log(filename + " upload");
+
     try {
         await fs.writeFileSync(base + filename, picture);
     } catch (err) {
@@ -90,7 +92,6 @@ exports . upload = async function (req , res) {
         try {
             await VenuePhoto.makePrimary(requestedVenueId);
         } catch (err) {
-            console.log(err);
             res.status(500).send('Server Error');
             return;
         }
@@ -106,7 +107,6 @@ exports . upload = async function (req , res) {
     try {
         await VenuePhoto.addVenuePhoto(values);
     } catch (err) {
-        console.log(err);
         res.status(500).send('Server Error');
         return;
     }
@@ -172,7 +172,6 @@ exports . setPrimary = async function (req , res) {
         await VenuePhoto.makePrimary(requestedVenueId);
         result3 = await VenuePhoto.makePrimaryWithFilename(filename);
     } catch (err) {
-        console.log(err);
         res.status(500).send('Server Error');
         return;
     }
@@ -210,7 +209,7 @@ exports . retrieve = async function (req , res) {
     }
 
     // console.log(requestedVenueId);
-    console.log(filename);
+    console.log(filename + " from URL");
     // fs.readdir(base, function (err, files) {
     //     //handling error
     //     if (err) {
@@ -245,7 +244,6 @@ exports . retrieve = async function (req , res) {
     try {
         picture = await fs.readFileSync(base + filename)
     } catch (err) {
-        console.log(err);
         res.status(500).send('Error');
         return;
     }
