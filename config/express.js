@@ -19,7 +19,7 @@ module.exports = function () {
     app.use(bodyParser.raw({ type: 'text/plain' }));  // for the /executeSql endpoint
     app.use(bodyParser.raw({ type: 'image/png' }));
     app.use(bodyParser.raw({ type: 'image/jpeg' }));
-    app.use(multer().array('photo'));
+    app.use(multer().single('photo'));
 
     // ROUTES
     require('../app/routes/backdoor.routes')(app);

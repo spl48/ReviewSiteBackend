@@ -5,12 +5,12 @@ exports . upload = async function (req , res) {
     let data = {
         "authorization": req.header('X-Authorization'),
         "venue_id": req.params.id,
-        "picture": req.files,
+        "picture": req.file,
         "description": req.body['description'],
         "makePrimary": req.body['makePrimary']
     };
 
-    console.log(data['picture'][0]['originalname'] + " upload");
+    console.log(req.file);
 
     let authToken = data['authorization'];
     let requestedVenueId = data['venue_id'];
