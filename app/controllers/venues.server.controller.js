@@ -140,6 +140,11 @@ exports . read = async function (req , res) {
     }
 
 
+    photoInfo[0]['isPrimary'] = photoInfo[0]['isPrimary'] !== 0;
+
+
+
+
     res.json({venueName: data['venue_name'],
             admin: {
                 userId: data['admin_id'],
