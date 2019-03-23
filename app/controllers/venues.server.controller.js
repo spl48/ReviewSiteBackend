@@ -139,7 +139,10 @@ exports . read = async function (req , res) {
         return;
     }
 
-    photoInfo[0]['isPrimary'] = photoInfo[0]['isPrimary'] !== 0;
+    if (photoInfo[0] !== undefined) {
+        photoInfo[0]['isPrimary'] = photoInfo[0]['isPrimary'] !== 0;
+    }
+
     res.json({venueName: data['venue_name'],
             admin: {
                 userId: data['admin_id'],
