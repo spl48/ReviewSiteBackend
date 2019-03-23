@@ -38,7 +38,7 @@ exports . makePrimary = async function (venueId) {
 
 exports . makePrimaryWithFilename = async function (filename) {
     try {
-        await db.getPool().query('UPDATE VenuePhoto SET is_primary=1 WHERE photo_filename=?', filename);
+        let result = await db.getPool().query('UPDATE VenuePhoto SET is_primary=1 WHERE photo_filename=?', filename);
         return result;
     } catch (err) {
         throw (err);
@@ -66,6 +66,23 @@ exports . getVenue = async function (venueId) {
 exports . checkPrimary = async function (venueId) {
     try {
         let result = await db.getPool().query('SELECT * FROM VenuePhoto WHERE venue_id=? AND is_primary=1', venueId);
+        return result;
+    } catch (err) {
+        throw (err);
+    }
+};
+
+exports . deletePic = async function (filename) {
+    try {
+        await db.getPool().query('DELETE FROM VenuePhoto WHERE photo_filename=?', filename);
+    } catch (err) {
+        throw (err);
+    }
+};
+
+exports . getVenuePhotos = async function (venueId) {
+    try {
+        let result = await db.getPool().query('SELECT * FROM VenuePhoto WHERE venue_id=?', venueId);
         return result;
     } catch (err) {
         throw (err);

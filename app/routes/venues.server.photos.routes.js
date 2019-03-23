@@ -5,5 +5,6 @@ module . exports  =  function ( app ) {
     app.route(app.rootUrl + '/venues/:id/photos/:filename/setPrimary')
         .post(venuePhotos . setPrimary);
     app.route(app.rootUrl + '/venues/:id/photos/:filename')
-        .get(venuePhotos . retrieve);
+        .get(venuePhotos . retrieve)
+        .delete(venuePhotos . delete);
 };

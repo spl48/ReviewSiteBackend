@@ -1,6 +1,8 @@
 const  VenuePhoto  =  require ( '../models/venues.photos.server.model' );
 const fs = require('fs');
 
+let base = 'app/storage/photos/';
+
 exports . upload = async function (req , res) {
     let data = {
         "authorization": req.header('X-Authorization'),
@@ -76,7 +78,6 @@ exports . upload = async function (req , res) {
         return;
     }
 
-    let base = 'app/storage/photos/';
     let filename = buffer[0]['originalname'];
 
     try {
@@ -94,7 +95,6 @@ exports . upload = async function (req , res) {
         return;
     }
 
-    console.log(primaryCheck);
     if (primaryCheck.length === 0) {
         isPrimary = true;
     }
@@ -204,8 +204,6 @@ exports . retrieve = async function (req , res) {
     let requestedVenueId = data['venue_id'];
     let filename = data['filename'];
 
-    let base = 'app/storage/photos/';
-
     let result = null;
     try {
         result = await VenuePhoto.getVenue(requestedVenueId);
@@ -270,6 +268,114 @@ exports . retrieve = async function (req , res) {
 
     res.append('content-type', fileType);
     res.status(200).send(picture);
+};
+
+exports . delete = async function (req , res) {
+    let data = {
+        "authorization": req.header('X-Authorization'),
+        "user_id": req.params.id,
+        "filename": req.params.filename
+    };
+
+    let authToken = data['authorization'];
+    let requestedVenueId = data['user_id'];
+    let filename = data['filename'];
+
+    if (authToken === null || authToken === undefined || authToken === "") {
+        res.status(401).send('Unauthorized');
+        return;
+    }
+
+    let result = null;
+    try {
+        result = await VenuePhoto.authorize(authToken);
+    } catch (err) {
+        res.status(500).send('Server Error');
+        return;
+    }
+
+    let userId = null;
+    if (result.length !== 0) {
+        userId = result[0]['user_id'];
+    } else {
+        res.status(401).send('Unauthorized');
+        return;
+    }
+
+    let result2 = null;
+    try {
+        result2 = await VenuePhoto.getVenueAdmin(requestedVenueId);
+    } catch (err) {
+        res.status(500).send('Server Error');
+        return;
+    }
+
+    let requestedVenueAdminId = null;
+    if (result2.length === 0) {
+        res.status(404).send('Not Found');
+        return;
+    } else {
+        requestedVenueAdminId = result2[0]['admin_id']
+    }
+
+    if (requestedVenueAdminId.toString() !== userId.toString()) {
+        res.status(403).send('Forbidden');
+        return;
+    }
+
+    let dbFilename = null;
+    try {
+        dbFilename = await VenuePhoto.getPicture(requestedVenueId, filename);
+    } catch (err) {
+        res.status(500).send('Server Error');
+        return;
+    }
 
 
-}
+    let isPrimary = dbFilename[0]['is_primary'];
+
+    if (dbFilename.length === 0) {
+        res.status(404).send('Not Found');
+        return;
+    }
+
+    try {
+        await VenuePhoto.deletePic(filename);
+    } catch (err) {
+        res.status(500).send('Server Error');
+        return;
+    }
+
+    let venuePhotos = null;
+    if (isPrimary) {
+        try {
+            venuePhotos = await VenuePhoto.getVenuePhotos(requestedVenueId);
+        } catch (err) {
+            res.status(500).send('Server Error');
+            return;
+        }
+
+        let randomPhoto = null;
+        if (venuePhotos.length !== 0) {
+            randomPhoto = venuePhotos[0]['photo_filename'];
+            try {
+                await VenuePhoto.makePrimaryWithFilename(randomPhoto);
+            } catch (err) {
+                res.status(500).send('Server Error');
+                return;
+            }
+
+        }
+    }
+
+
+    try {
+        await fs.unlinkSync(base + filename);
+    } catch (err) {
+        res.status(500).send('Server Error');
+        return;
+    }
+
+    res.status(200).send('OK');
+
+};
