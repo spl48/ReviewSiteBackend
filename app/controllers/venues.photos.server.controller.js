@@ -332,12 +332,12 @@ exports . delete = async function (req , res) {
     }
 
 
-    let isPrimary = dbFilename[0]['is_primary'];
-
     if (dbFilename.length === 0) {
         res.status(404).send('Not Found');
         return;
     }
+
+    let isPrimary = dbFilename[0]['is_primary'];
 
     try {
         await VenuePhoto.deletePic(filename);
