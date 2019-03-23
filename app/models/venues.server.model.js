@@ -118,7 +118,7 @@ exports . updateLongitude = async function (values) {
     }
 };
 
-exports . getCategories = async function (categoryId) {
+exports . getCategoryInfo = async function (categoryId) {
     try {
         let result = await db.getPool().query('SELECT category_id AS categoryId, category_name AS categoryName, category_description AS categoryDescription' +
             ' FROM VenueCategory WHERE category_id=?', categoryId);
@@ -127,6 +127,17 @@ exports . getCategories = async function (categoryId) {
         throw (err);
     }
 };
+
+exports . getCategories = async function () {
+    try {
+        let result = await db.getPool().query('SELECT category_id AS categoryId, category_name AS categoryName, category_description AS categoryDescription' +
+            ' FROM VenueCategory');
+        return result;
+    } catch (err) {
+        throw (err);
+    }
+};
+
 
 exports . getVenuePhoto = async function (venueId) {
     try {
