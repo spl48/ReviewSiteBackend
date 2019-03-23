@@ -16,6 +16,8 @@ exports . upload = async function (req , res) {
     let description = data['description'];
     let makePrimary = data['makePrimary'];
 
+    console.log(req.files);
+
     let isPrimary = 0;
     if (makePrimary === "true") {
         makePrimary = true;
@@ -26,8 +28,6 @@ exports . upload = async function (req , res) {
         res.status(400).send('Bad Request');
         return;
     }
-
-    console.log(req);
 
     if (buffer[0] === undefined || description === undefined || description === "" || description === null) {
         res.status(400).send('Bad Request');

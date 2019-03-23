@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const multer = require('multer');
+const formidableMiddleware = require('express-formidable');
 
 const allowCrossOriginRequests = function (req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
@@ -19,7 +20,8 @@ module.exports = function () {
     app.use(bodyParser.raw({ type: 'text/plain' }));  // for the /executeSql endpoint
     app.use(bodyParser.raw({ type: 'image/png' }));
     app.use(bodyParser.raw({ type: 'image/jpeg' }));
-    app.use(multer().array('photo'));
+    //app.use(multer().array('photo'));
+    app.use(formidableMiddleware());
 
     // ROUTES
     require('../app/routes/backdoor.routes')(app);
