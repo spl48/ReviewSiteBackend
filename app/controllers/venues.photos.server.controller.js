@@ -16,8 +16,6 @@ exports . upload = async function (req , res) {
     let description = data['description'];
     let makePrimary = data['makePrimary'];
 
-    console.log(req.files);
-
     let isPrimary = 0;
     if (makePrimary === "true") {
         makePrimary = true;
