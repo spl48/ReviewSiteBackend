@@ -116,7 +116,7 @@ exports . read = async function (req , res) {
 
     let categoryInfo = null;
     try {
-        categoryInfo = await Venue.getCategory(data['venue_id']);
+        categoryInfo = await Venue.getCategories(data['venue_id']);
     } catch (err) {
         res.status(500).send('Server Error');
         return;
