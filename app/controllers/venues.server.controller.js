@@ -591,11 +591,11 @@ exports . retrieve = async function (req , res) {
         return;
     }
 
-    if (sort_by === "DISTANCE" && asc_dec === "ASC") {
+    if (sort_by === "DISTANCE" && asc_dec === "DESC") {
         output.sort(function(a, b) {
             return parseFloat(a.distance) - parseFloat((b.distance));
         });
-    } else if (sort_by === "DISTANCE" && asc_dec === "DESC") {
+    } else if (sort_by === "DISTANCE" && asc_dec === "ASC") {
         output.sort(function(a, b) {
             return parseFloat((a.distance) - parseFloat((b.distance)))*-1;
         });
