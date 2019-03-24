@@ -618,7 +618,7 @@ exports . retrieve = async function (req , res) {
     }
 
     if (start_index !== undefined) {
-        output = output.splice(start_index);
+        output = output.splice(start_index-1);
     }
 
     if (count !== undefined) {
