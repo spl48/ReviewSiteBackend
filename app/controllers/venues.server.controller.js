@@ -615,6 +615,10 @@ exports . retrieve = async function (req , res) {
         output.sort(function (a, b) {
             return parseFloat((a.modeCostRating) - parseFloat((b.modeCostRating))) * -1;
         });
+    } else {
+        output.sort(function (a, b) {
+            return parseFloat((a.meanStarRating) - parseFloat((b.meanStarRating))) * -1;
+        });
     }
 
     if (start_index !== undefined) {
