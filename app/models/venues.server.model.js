@@ -147,3 +147,57 @@ exports . getVenuePhoto = async function (venueId) {
         throw (err);
     }
 };
+
+exports . getVenues = async function (queryString, queryValues) {
+    try {
+        let result = await db.getPool().query(queryString, queryValues);
+        return result;
+    } catch (err) {
+        throw (err);
+    }
+};
+
+exports . getIdsOverMinStar = async function (min_star_rating) {
+    try {
+        let result = await db.getPool().query('SELECT reviewed_venue_id FROM (SELECT reviewed_venue_id, AVG(star_rating) as average FROM Review GROUP BY reviewed_venue_id) AS NAME WHERE average >= ?', min_star_rating);
+        return result;
+    } catch (err) {
+        throw (err);
+    }
+};
+
+exports . getIdsUnderMaxCost = async function (max_cost_rating) {
+    try {
+        let result = await db.getPool().query('SELECT venue_id FROM ModeCostRating WHERE mode_cost_rating <= ?', max_cost_rating);
+        return result;
+    } catch (err) {
+        throw (err);
+    }
+};
+
+exports . getMeanStarRating = async function (venueId) {
+    try {
+        let result = await db.getPool().query('SELECT AVG(star_rating) as average FROM Review WHERE reviewed_venue_id=? ', venueId);
+        return result;
+    } catch (err) {
+        throw (err);
+    }
+};
+
+exports . getPrimaryPhoto = async function (venueId) {
+    try {
+        let result = await db.getPool().query('SELECT photo_filename FROM VenuePhoto WHERE venue_id=? AND is_primary=1', venueId);
+        return result;
+    } catch (err) {
+        throw (err);
+    }
+};
+
+exports . getModeCostRating = async function (venueId) {
+    try {
+        let result = db.getPool().query('SELECT mode_cost_rating FROM ModeCostRating WHERE venue_id=?', venueId);
+        return result;
+    } catch (err) {
+        throw (err);
+    }
+};

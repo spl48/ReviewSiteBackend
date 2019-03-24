@@ -299,7 +299,6 @@ exports . update = async function (req , res) {
 };
 
 exports . readAll = async function (req , res) {
-
     let result = null;
     try {
         result = await Venue.getCategories();
@@ -310,4 +309,369 @@ exports . readAll = async function (req , res) {
 
     res.json(result);
 
+};
+
+function toRad(x) {
+    return x * Math.PI / 180;
 }
+
+function getDistance(lat1, lat2, lon1, lon2) {
+
+    var R = 6371; // km
+//has a problem with the .toRad() method below.
+    var x1 = lat2-lat1;
+    var dLat = toRad(x1);
+    var x2 = lon2-lon1;
+    var dLon = toRad(x2);
+    var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+        Math.sin(dLon/2) * Math.sin(dLon/2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    var d = R * c;
+
+    return d;
+}
+
+
+exports . retrieve = async function (req , res) {
+
+    let query = req.query;
+
+    let count = query['count'];
+    let start_index = query['startIndex'];
+    let city = query['city'];
+    let category_id = query['categoryId'];
+    let max_cost_rating = query['maxCostRating'];
+    let admin_id = query['adminId'];
+    let search_term = query['q'];
+    let min_star_rating = query['minStarRating'];
+    let sort_by = query['sortBy'];
+    let reverse_sort = query['reverseSort'];
+    let my_latitude = query['myLatitude'];
+    let my_longitude = query['myLongitude'];
+
+    let and = false;
+
+    let queryValues = [];
+
+    let queryString = 'SELECT venue_id AS venueId, venue_name AS venueName, category_id AS categoryId, city, short_description AS shortDescription, ' +
+        'latitude, longitude FROM Venue ';
+
+    if (category_id !== undefined || admin_id !== undefined || search_term !== undefined ) {
+        queryString += ' WHERE ';
+    }
+
+    //queryString += 'venue_id IN (SELECT reviewed_venue_id FROM (SELECT reviewed_venue_id, AVG(star_rating) as average FROM REVIEW GROUP BY reviewed_venue_id) WHERE average >= 3)';
+
+
+    let search_params = [city, category_id, admin_id];
+    let search_names  = ['city', 'category_id', 'admin_id'];
+
+    for (let i=0; i<search_params.length; i++) {
+        if (search_params[i] !== undefined) {
+            if (!and) {
+                and = true;
+            } else {
+                queryString += 'AND ';
+            }
+            queryString += search_names[i] + '=? ';
+            queryValues.push(search_params[i]);
+        }
+    }
+
+    // let meanStarRating = null;
+    // //TODO get mean star ratings of each venue
+    // let venueIds = null;
+    // try {
+    //     venueIds = await Venue.getVenueIds();
+    // } catch (err) {
+    //     console.log(err);
+    //     res.status(500).send('Server Error');
+    //     return;
+    // }
+    //
+    // if (venueIds.length !== 0) {
+    //     //venueIds = venueIds[0];
+    // } else {
+    //     req.status(400).send('Bad Request');
+    // }
+    //
+    // let venueIdsList
+    //
+    // if (min_star_rating !== undefined) {
+    //     if (!and) {
+    //         and = true;
+    //     } else {
+    //         queryString += 'AND ';
+    //     }
+    //     queryString += 'star_rating >=? ';
+    //     queryValues.push(meanStarRating);
+    // }
+    //
+    // let modeCostRating = null;
+    // //TODO get mode cost rating
+    // if (max_cost_rating !== undefined) {
+    //     if (!and) {
+    //         and = true;
+    //     } else {
+    //         queryString += 'AND ';
+    //     }
+    //     queryString += 'star_rating <=? ';
+    //     queryValues.push(modeCostRating);
+    // }
+
+    if (search_term !== undefined) {
+        if (!and) {
+            and = true;
+        } else {
+            queryString += 'AND ';
+        }
+        queryString += 'venue_name LIKE ? ';
+        search_term = '%' + search_term + '%';
+        queryValues.push(search_term);
+    }
+
+    //-------------------------------------------------------------------------------------
+    let satisfactoryVenueIdsStar = [];
+    let satisfactoryVenueIdsCost = [];
+    if (min_star_rating !== undefined) {
+        let yoza = null;
+        try {
+            yoza = await Venue.getIdsOverMinStar(min_star_rating);
+        } catch (err) {
+            console.log(err);
+        }
+
+
+        for (let i = 0; i < yoza.length; i++) {
+            satisfactoryVenueIdsStar.push(yoza[i]['reviewed_venue_id']);
+        }
+
+
+        // if (satisfactoryVenueIdsStar.length !== 0) {
+        //     if (!and) {
+        //         and = true;
+        //     } else {
+        //         queryString += ' AND ';
+        //     }
+        //     queryString += ' WHERE venue_id IN (?) ';
+        //     queryValues.push(satisfactoryVenueIdsStar);
+        // }
+
+    }
+
+
+    if (max_cost_rating !== undefined) {
+        let yoza2 = null;
+        try {
+            yoza2 = await Venue.getIdsUnderMaxCost(max_cost_rating);
+        } catch (err) {
+            console.log(err);
+        }
+
+        for (let i = 0; i < yoza2.length; i++) {
+            satisfactoryVenueIdsCost.push(yoza2[i]['venue_id']);
+        }
+
+
+        // if(satisfactoryVenueIdsCost.length !== 0) {
+        //     if (!and) {
+        //         and = true;
+        //     } else {
+        //         queryString += ' AND ';
+        //     }
+        //     queryString += ' WHERE venue_id IN (?) ';
+        //     queryValues.push(satisfactoryVenueIdsCost);
+        // }
+
+    }
+
+//--------------------------------------------------------------------------------------
+
+    // queryString += ' ? >= (SELECT AVG(star_rating) FROM Review GROUP BY reviewed_venue_id)';
+    // queryValues.push(min_star_rating);
+
+
+
+    if (count !== undefined) {
+        queryString += ' LIMIT ' + count;
+        queryValues.push(count);
+    }
+
+    if (start_index !== undefined) {
+        queryString += ' OFFSET ' + start_index;
+        queryValues.push(start_index);
+    }
+
+
+    let result = null;
+    try {
+        result = await Venue.getVenues(queryString, queryValues);
+    } catch (err) {
+        console.log(err);
+        res.status(500).send('Server Error');
+        return;
+    }
+
+
+    if (min_star_rating !== undefined) {
+        let i = result.length;
+        while (i--) {
+            if (satisfactoryVenueIdsStar.includes(result[i]['venueId'])) {
+            } else {
+                result.splice(i, 1);
+            }
+        }
+    }
+
+    if (max_cost_rating !== undefined) {
+        let i = result.length;
+        while (i--) {
+            if (satisfactoryVenueIdsCost.includes(result[i]['venueId'])) {
+            } else {
+                result.splice(i, 1);
+            }
+        }
+    }
+
+
+
+    for (let i=0; i<result.length; i++) {
+        if (my_latitude !== undefined && my_longitude !== undefined) {
+            let venueLat = result[i]['latitude'];
+            let venueLon = result[i]['longitude'];
+            let distance = getDistance(my_latitude, venueLat, my_longitude, venueLon);
+            result[i]['distance'] = distance;
+
+        } else if (sort_by === "DISTANCE") {
+            res.status(404).send("Not Found");
+            return;
+        }
+    }
+
+
+    for (let i=0; i<result.length; i++) {
+        let result5 = null;
+        try {
+            result5 = await Venue.getMeanStarRating(result[i]['venueId']);
+        } catch (err) {
+            console.log(err);
+            res.status(500).send('Server Error');
+            return;
+        }
+
+        if (result5[0]['average'] === null) {
+            result[i]['meanStarRating'] = 0;
+        } else {
+            result[i]['meanStarRating'] = result5[0]['average'];
+        }
+    }
+
+    for (let i=0; i<result.length; i++) {
+        let result6 = null;
+        try {
+            result6 = await Venue.getPrimaryPhoto(result[i]['venueId']);
+        } catch (err) {
+            console.log(err);
+            res.status(500).send('Server Error');
+            return;
+        }
+
+        if (result6[0] === undefined) {
+            result[i]['primaryPhoto'] = null;
+        } else {
+            result[i]['primaryPhoto'] = result6[0]['photo_filename'];
+        }
+    }
+
+    for (let i=0; i<result.length; i++) {
+        let result7 = null;
+        try {
+            result7 = await Venue.getModeCostRating(result[i]['venueId']);
+        } catch (err) {
+            console.log(err);
+            res.status(500).send('Server Error');
+            return;
+        }
+
+        if (result7[0] === undefined) {
+            result[i]['modeCostRating'] = 0;
+        } else {
+            result[i]['modeCostRating'] = result7[0]['mode_cost_rating'];
+        }
+    }
+
+
+    let output = [];
+
+    for (let i=0; i<result.length; i++) {
+        output.push({
+            "venueId": result[i]['venueId'],
+            "venueName": result[i]['venueName'],
+            "categoryId": result[i]['categoryId'],
+            "city": result[i]['city'],
+            "shortDescription": result[i]['shortDescription'],
+            "latitude": result[i]['latitude'],
+            "longitude": result[i]['longitude'],
+            "meanStarRating": result[i]['meanStarRating'],
+            "modeCostRating": result[i]['modeCostRating'],
+            "primaryPhoto": result[i]['primaryPhoto'],
+            "distance": result[i]['distance']
+        });
+    }
+
+
+
+
+    // //TODO sort by distance
+    let asc_dec = null;
+    if (sort_by !== undefined) {
+        if (sort_by === "DISTANCE" || sort_by === "STAR_RATING") {
+            asc_dec = "ASC";
+        } else {
+            asc_dec = "DESC";
+        }
+    }
+
+    if (reverse_sort === "true") {
+        if (sort_by === "DISTANCE" || sort_by === "STAR_RATING") {
+            asc_dec = "DESC";
+        } else {
+            asc_dec = "ASC";
+        }
+    }
+
+    if (sort_by === "DISTANCE" && my_longitude === undefined && my_latitude === undefined) {
+        res.status(400).send('Bad Request');
+        return;
+    }
+
+    if (sort_by === "DISTANCE" && asc_dec === "ASC") {
+        output.sort(function(a, b) {
+            return parseFloat(a.distance) - parseFloat((b.distance));
+        });
+    } else if (sort_by === "DISTANCE" && asc_dec === "DESC") {
+        output.sort(function(a, b) {
+            return parseFloat((a.distance) - parseFloat((b.distance)))*-1;
+        });
+    } else if (sort_by === "STAR_RATING" && asc_dec === "DESC") {
+        output.sort(function(a, b) {
+            return parseFloat(a.meanStarRating) - parseFloat((b.meanStarRating));
+        });
+    } else if (sort_by === "STAR_RATING" && asc_dec === "ASC") {
+        output.sort(function (a, b) {
+            return parseFloat((a.meanStarRating) - parseFloat((b.meanStarRating))) * -1;
+        });
+    } else if (sort_by === "COST_RATING" && asc_dec === "DESC") {
+        output.sort(function (a, b) {
+            return parseFloat(a.modeCostRating) - parseFloat((b.modeCostRating));
+        });
+    } else if (sort_by === "COST_RATING" && asc_dec === "ASC") {
+        output.sort(function (a, b) {
+            return parseFloat((a.modeCostRating) - parseFloat((b.modeCostRating))) * -1;
+        });
+    }
+
+    res.status(200);
+    res.json(output);
+};

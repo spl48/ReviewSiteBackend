@@ -1,7 +1,8 @@
 const  venues  =  require ( '../controllers/venues.server.controller' );
 module . exports  =  function ( app ){
     app . route ( app.rootUrl + '/venues')
-        . post(venues . create);
+        . post(venues . create)
+        . get(venues . retrieve);
     app . route ( app.rootUrl + '/venues/:id')
         . get(venues . read)
         . patch(venues . update);
