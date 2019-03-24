@@ -435,18 +435,18 @@ exports . retrieve = async function (req , res) {
 
 
 
-    if (count !== undefined) {
-        queryString += ' LIMIT ' + count;
-        queryValues.push(count);
-    } else {
-        queryString += ' LIMIT 18446744073709551610';
-        queryValues.push(count);
-    }
-
-    if (start_index !== undefined) {
-        queryString += ' OFFSET ' + start_index;
-        queryValues.push(start_index);
-    }
+    // if (count !== undefined) {
+    //     queryString += ' LIMIT ' + count;
+    //     queryValues.push(count);
+    // } else {
+    //     queryString += ' LIMIT 18446744073709551610';
+    //     queryValues.push(count);
+    // }
+    //
+    // if (start_index !== undefined) {
+    //     queryString += ' OFFSET ' + start_index;
+    //     queryValues.push(start_index);
+    // }
 
 
     let result = null;
@@ -615,6 +615,14 @@ exports . retrieve = async function (req , res) {
         output.sort(function (a, b) {
             return parseFloat((a.modeCostRating) - parseFloat((b.modeCostRating))) * -1;
         });
+    }
+
+    if (start_index !== undefined) {
+        output = output.splice(start_index);
+    }
+
+    if (count !== undefined) {
+        output = output.splice(0, count);
     }
 
     res.status(200);
