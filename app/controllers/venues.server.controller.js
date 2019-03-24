@@ -350,6 +350,11 @@ exports . retrieve = async function (req , res) {
     let my_latitude = query['myLatitude'];
     let my_longitude = query['myLongitude'];
 
+    if (min_star_rating < 0 || min_star_rating > 5 || category_id < 0 || max_cost_rating > 5 || max_cost_rating < 0) {
+        res.status(400).send('Bad request');
+        return;
+    }
+
     let and = false;
 
     let queryValues = [];
@@ -379,46 +384,6 @@ exports . retrieve = async function (req , res) {
         }
     }
 
-    // let meanStarRating = null;
-    // //TODO get mean star ratings of each venue
-    // let venueIds = null;
-    // try {
-    //     venueIds = await Venue.getVenueIds();
-    // } catch (err) {
-    //     console.log(err);
-    //     res.status(500).send('Server Error');
-    //     return;
-    // }
-    //
-    // if (venueIds.length !== 0) {
-    //     //venueIds = venueIds[0];
-    // } else {
-    //     req.status(400).send('Bad Request');
-    // }
-    //
-    // let venueIdsList
-    //
-    // if (min_star_rating !== undefined) {
-    //     if (!and) {
-    //         and = true;
-    //     } else {
-    //         queryString += 'AND ';
-    //     }
-    //     queryString += 'star_rating >=? ';
-    //     queryValues.push(meanStarRating);
-    // }
-    //
-    // let modeCostRating = null;
-    // //TODO get mode cost rating
-    // if (max_cost_rating !== undefined) {
-    //     if (!and) {
-    //         and = true;
-    //     } else {
-    //         queryString += 'AND ';
-    //     }
-    //     queryString += 'star_rating <=? ';
-    //     queryValues.push(modeCostRating);
-    // }
 
     if (search_term !== undefined) {
         if (!and) {
@@ -447,17 +412,6 @@ exports . retrieve = async function (req , res) {
             satisfactoryVenueIdsStar.push(yoza[i]['reviewed_venue_id']);
         }
 
-
-        // if (satisfactoryVenueIdsStar.length !== 0) {
-        //     if (!and) {
-        //         and = true;
-        //     } else {
-        //         queryString += ' AND ';
-        //     }
-        //     queryString += ' WHERE venue_id IN (?) ';
-        //     queryValues.push(satisfactoryVenueIdsStar);
-        // }
-
     }
 
 
@@ -474,22 +428,10 @@ exports . retrieve = async function (req , res) {
         }
 
 
-        // if(satisfactoryVenueIdsCost.length !== 0) {
-        //     if (!and) {
-        //         and = true;
-        //     } else {
-        //         queryString += ' AND ';
-        //     }
-        //     queryString += ' WHERE venue_id IN (?) ';
-        //     queryValues.push(satisfactoryVenueIdsCost);
-        // }
 
     }
 
 //--------------------------------------------------------------------------------------
-
-    // queryString += ' ? >= (SELECT AVG(star_rating) FROM Review GROUP BY reviewed_venue_id)';
-    // queryValues.push(min_star_rating);
 
 
 
