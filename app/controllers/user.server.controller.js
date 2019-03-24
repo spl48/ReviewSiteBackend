@@ -5,6 +5,17 @@ function validateEmail(email) {
     return re.test(String(email).toLowerCase());
 }
 
+String.prototype.hash = function () {
+    var hash = 0;
+    if (this.length == 0) return hash;
+    for (i = 0; i < this.length; i++) {
+        char = this.charCodeAt(i);
+        hash = ((hash<<5)-hash)+char;
+        hash = hash & hash; // Convert to 32bit integer
+    }
+    return hash;
+};
+
 exports . create  =  function ( req , res ){
 
     //Check if username is empty
@@ -58,6 +69,10 @@ exports . create  =  function ( req , res ){
     let familyName = user_data['familyName'].toString();
     let password = user_data['password'].toString();
 
+
+    password = password.hash();
+    console.log(password);
+
     let values = [
         user, email, givenName, familyName, password
     ];
@@ -110,7 +125,7 @@ exports . login = function (req , res) {
     }
 
     let values = [
-        user, email, password
+        user, email, password.hash()
     ];
 
     let authToken = token();
