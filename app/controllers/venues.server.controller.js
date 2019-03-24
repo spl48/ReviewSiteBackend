@@ -438,6 +438,9 @@ exports . retrieve = async function (req , res) {
     if (count !== undefined) {
         queryString += ' LIMIT ' + count;
         queryValues.push(count);
+    } else {
+        queryString += ' LIMIT 18446744073709551610';
+        queryValues.push(count);
     }
 
     if (start_index !== undefined) {
